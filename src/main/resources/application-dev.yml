@@ -1,0 +1,36 @@
+server:
+  port: 8081
+web:
+  upload-path: /usr/local/uploadFile/
+  server-url: http://localhost:8080/
+spring:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+  datasource:
+    name: ynweb
+    url: jdbc:mysql://127.0.0.1:3306/yinnuo_web?characterEncoding=UTF-8&useSSL=false&autoReconnect=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  freemarker:
+    allow-request-override: false
+    template-loader-path: classpath:/templates/
+    cache: false
+    check-template-location: true
+    charset: UTF-8
+    content-type: text/html
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
+    suffix: .ftl
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.yuri.ynweb_kj.pojo
+pagehelper:
+  helperDialect: mysql
+  reasonablez: true
+  supportMethodsArguments: true
+  params: count=countSql
+

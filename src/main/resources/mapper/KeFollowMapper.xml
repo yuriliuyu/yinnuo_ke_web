@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeFollowMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeFollow" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_follow
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeFollow" >
+    insert into ke_follow (id, student_id, teacher_id, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeFollow" >
+    update ke_follow
+    set student_id = #{studentId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, student_id, teacher_id, create_time, update_time
+    from ke_follow
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, student_id, teacher_id, create_time, update_time
+    from ke_follow
+  </select>
+  <select id="teacherFollow" resultMap="BaseResultMap" >
+    select student_id from ke_follow where teacher_id=#{teacherId}
+  </select>
+  <select id="studentFollow" resultMap="BaseResultMap" >
+    select teacher_id from ke_follow where student_id=#{studentId}
+  </select>
+  <select id="findFollow" resultMap="BaseResultMap" >
+    select id from ke_follow where student_id=#{studentId} and teacher_id=#{teacherId}
+  </select>
+</mapper>

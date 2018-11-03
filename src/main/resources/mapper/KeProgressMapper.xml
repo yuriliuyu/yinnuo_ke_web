@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeProgressMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeProgress" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="video" property="video" jdbcType="INTEGER" />
+    <result column="subject" property="subject" jdbcType="INTEGER" />
+    <result column="credit" property="credit" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_progress
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeProgress" >
+    insert into ke_progress (id, student_id, date, 
+      video, subject, credit, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP}, 
+      #{video,jdbcType=INTEGER}, #{subject,jdbcType=INTEGER}, #{credit,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeProgress" >
+    update ke_progress
+    set student_id = #{studentId,jdbcType=INTEGER},
+      date = #{date,jdbcType=TIMESTAMP},
+      video = #{video,jdbcType=INTEGER},
+      subject = #{subject,jdbcType=INTEGER},
+      credit = #{credit,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, student_id, date, video, subject, credit, create_time, update_time
+    from ke_progress
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, student_id, date, video, subject, credit, create_time, update_time
+    from ke_progress
+  </select>
+  <select id="findProgressList" resultMap="BaseResultMap">
+    select video, subject, credit, date
+    from ke_progress where student_id=#{studentId}
+    <if test="type != null and type == '1'.toString()" >
+      and to_days(`date`) = to_days(now())
+    </if>
+    <if test="type != null and type == '2'.toString()" >
+      and date_sub(curdate(), interval 7 day) &lt;= date(`date`)
+    </if>
+    <if test="type != null and type == '3'.toString()" >
+      and date_sub(curdate(), interval 30 day) &lt;= date(`date`)
+    </if>
+    order by create_time
+  </select>
+</mapper>
