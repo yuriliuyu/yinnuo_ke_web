@@ -50,8 +50,8 @@ public class UserService {
         return resultList;
     }
 
-    public KeUser findUserById(Integer teacherId) {
-        return userMapper.selectByPrimaryKey(teacherId);
+    public KeUser findUserById(Integer userId) {
+        return userMapper.selectByPrimaryKey(userId);
     }
 
     public void updateUser(KeUser user) {
@@ -104,5 +104,9 @@ public class UserService {
         follow.setTeacherId(teacherId);
         follow.setCreateTime(new Date());
         keFollowMapper.insert(follow);
+    }
+
+    public void teacherToSubject(KeUser teacher, List<Integer> studentIdList) {
+
     }
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeContentMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeContent" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="shape" property="shape" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_content
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeContent" >
+    insert into ke_content (id, pid, title,
+      category, level, type,
+      shape, order_id, create_time,
+      update_time, url, description,
+      content)
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+      #{category,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+      #{shape,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{url,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR},
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeContent" >
+    update ke_content
+    set pid = #{pid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      category = #{category,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      shape = #{shape,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      url = #{url,jdbcType=VARCHAR},
+      description = #{description,jdbcType=LONGVARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, pid, title, category, level, type, shape, order_id, create_time, update_time,
+    url, description, content
+    from ke_content
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, pid, title, category, level, type, shape, order_id, create_time, update_time,
+    url, description, content
+    from ke_content
+  </select>
+  <sql id="Base_Column_List" >
+    id, pid, title, level, type, shape, order_id, create_time, update_time, category,
+    description, url, content
+  </sql>
+  <select id="getContentListByCategoryAndPid" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from ke_content
+    where category=#{category} and pid=#{pid} order by order_id desc
+    <if test="limit != null">
+      limit #{limit}
+    </if>
+  </select>
+  <resultMap id="listcount" type="com.yuri.ynweb_kj.dto.content.ContentCountDto">
+    <result column="count(1)" property="count" jdbcType="INTEGER"/>
+    <result column="category" property="category" jdbcType="INTEGER"/>
+  </resultMap>
+  <select id="getContentListCount" resultMap="listcount">
+    select count(1), category from ke_content where pid=-1 group by category order by category
+  </select>
+
+
+</mapper>

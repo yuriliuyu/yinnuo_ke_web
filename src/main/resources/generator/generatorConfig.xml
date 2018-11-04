@@ -36,5 +36,7 @@
         <table schema="yinnuo_web" tableName="ke_follow"/>
         <table schema="yinnuo_web" tableName="ke_signin"/>
         <table schema="yinnuo_web" tableName="ke_progress"/>
+        <table schema="yinnuo_web" tableName="ke_content"/>
+        <table schema="yinnuo_web" tableName="ke_subject"/>
     </context>
 </generatorConfiguration>

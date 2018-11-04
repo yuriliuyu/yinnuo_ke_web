@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = {"/userapi"})
@@ -36,9 +35,9 @@ public class UserController {
 
     /**
      * 登录接口
-     * @param userName
-     * @param password
-     * @return
+     * @param userName 用户名
+     * @param password 密码
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/login", method = RequestMethod.POST)
     public BaseJsonResultVO login(@RequestParam(value = "username") String userName, @RequestParam(value = "password") String password) {
@@ -134,12 +133,12 @@ public class UserController {
 
     /**
      * 查询个人未读消息数
-     * @param teacherId
+     * @param userId
      * @return
      */
     @RequestMapping(value = "/front/message", method = RequestMethod.POST)
-    public BaseJsonResultVO message(@RequestParam(value = "teacherid") Integer teacherId) {
-        KeUser teacher = userService.findUserById(teacherId);
+    public BaseJsonResultVO message(@RequestParam(value = "userid") Integer userId) {
+        KeUser teacher = userService.findUserById(userId);
         if (teacher != null) {
             BaseJsonResultVO vo = new BaseJsonResultVO();
             vo.setCode(EnumResCode.SUCCESSFUL.value());
@@ -268,6 +267,30 @@ public class UserController {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setData(result);
+        vo.setMessage("ok");
+        return vo;
+    }
+
+    /**
+     * TODO
+     * 老师向学生提问
+     * @param teacherId
+     * @param studentIds
+     * @return
+     */
+    @RequestMapping(value = "/front/tosubject", method = RequestMethod.POST)
+    public BaseJsonResultVO toSubject(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentids") String studentIds) {
+        List<String> studentIdStrings = Arrays.asList(studentIds.split(","));
+        List<Integer> studentIdList = studentIdStrings.stream().map(Integer::parseInt).collect(Collectors.toList());
+        KeUser teacher = userService.findUserById(teacherId);
+        userService.teacherToSubject(teacher, studentIdList);
+        for(int id: studentIdList){
+            KeUser user = userService.findUserById(id);
+            user.setMessage(user.getMessage()+1);
+            userService.updateUser(user);
+        }
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
     }

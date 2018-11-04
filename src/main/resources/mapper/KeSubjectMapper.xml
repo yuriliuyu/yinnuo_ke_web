@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeSubjectMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeSubject" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="reply_id" property="replyId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_subject
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
+    insert into ke_subject (id, content, teacher_id, 
+      student_id, reply_id, create_time, 
+      update_time, level)
+    values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER}, 
+      #{studentId,jdbcType=INTEGER}, #{replyId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{level,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
+    update ke_subject
+    set content = #{content,jdbcType=VARCHAR},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      student_id = #{studentId,jdbcType=INTEGER},
+      reply_id = #{replyId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      level = #{level,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, content, teacher_id, student_id, reply_id, create_time, update_time, level
+    from ke_subject
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, content, teacher_id, student_id, reply_id, create_time, update_time, level
+    from ke_subject
+  </select>
+</mapper>
