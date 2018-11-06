@@ -5,6 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
     <result column="student_id" property="studentId" jdbcType="INTEGER" />
     <result column="reply_id" property="replyId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -16,17 +17,20 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
-    insert into ke_subject (id, content, teacher_id, 
-      student_id, reply_id, create_time, 
-      update_time, level)
-    values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER}, 
-      #{studentId,jdbcType=INTEGER}, #{replyId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{level,jdbcType=INTEGER})
+    insert into ke_subject (id, content, teacher_id,
+      teacher_name, student_id, reply_id,
+      create_time, update_time, level
+      )
+    values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER},
+      #{teacherName,jdbcType=VARCHAR}, #{studentId,jdbcType=INTEGER}, #{replyId,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{level,jdbcType=INTEGER}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
     update ke_subject
     set content = #{content,jdbcType=VARCHAR},
       teacher_id = #{teacherId,jdbcType=INTEGER},
+      teacher_name = #{teacherName,jdbcType=VARCHAR},
       student_id = #{studentId,jdbcType=INTEGER},
       reply_id = #{replyId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -35,12 +39,14 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, content, teacher_id, student_id, reply_id, create_time, update_time, level
+    select id, content, teacher_id, teacher_name, student_id, reply_id, create_time,
+    update_time, level
     from ke_subject
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, content, teacher_id, student_id, reply_id, create_time, update_time, level
+    select id, content, teacher_id, teacher_name, student_id, reply_id, create_time,
+    update_time, level
     from ke_subject
   </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.yuri.ynweb_kj.dto.content;
 
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.ToString;
@@ -7,11 +8,11 @@ import lombok.ToString;
 @Data
 @ToString
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class TrainingL3Dto {
+public class CharacterDto {
     private Integer id;
-    private String title;
-    private Integer type;
-    private String url;
-    private String content;
-    private Integer isReadable; // 1-是，2-否
+    private String information;
+    private String gender;
+    private Integer age;
+    private String name;
+    private String protrait;
 }

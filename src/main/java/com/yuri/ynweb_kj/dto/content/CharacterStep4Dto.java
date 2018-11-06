@@ -1,17 +1,17 @@
 package com.yuri.ynweb_kj.dto.content;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.yuri.ynweb_kj.pojo.KeCharacterPic;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @ToString
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class TrainingL3Dto {
-    private Integer id;
-    private String title;
-    private Integer type;
-    private String url;
-    private String content;
-    private Integer isReadable; // 1-是，2-否
+public class CharacterStep4Dto {
+    private Integer characterId;
+    private String backgroundPic4;
+    private List<KeCharacterPic> picList;
 }

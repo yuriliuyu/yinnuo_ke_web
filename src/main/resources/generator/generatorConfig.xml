@@ -38,5 +38,10 @@
         <table schema="yinnuo_web" tableName="ke_progress"/>
         <table schema="yinnuo_web" tableName="ke_content"/>
         <table schema="yinnuo_web" tableName="ke_subject"/>
+        <table schema="yinnuo_web" tableName="ke_character"/>
+        <table schema="yinnuo_web" tableName="ke_character_pic"/>
+        <table schema="yinnuo_web" tableName="ke_content_character"/>
+        <table schema="yinnuo_web" tableName="ke_content_readable"/>
+        <table schema="yinnuo_web" tableName="ke_reply"/>
     </context>
 </generatorConfiguration>

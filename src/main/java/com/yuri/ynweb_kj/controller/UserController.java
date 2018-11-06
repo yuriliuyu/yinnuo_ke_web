@@ -209,7 +209,6 @@ public class UserController {
             dto.setProcess(decimalProcess.divide(new BigDecimal(10)).toString());
             dto.setPortrait(student.getPortrait());
             dto.setName(student.getName());
-            dto.setLoginTotal((int) Math.floor(student.getLoginTotal() / 60));
             dto.setSigninNum(student.getSigninNum());
             BaseJsonResultVO vo = new BaseJsonResultVO();
             vo.setCode(EnumResCode.SUCCESSFUL.value());
@@ -272,26 +271,37 @@ public class UserController {
     }
 
     /**
-     * TODO
      * 老师向学生提问
-     * @param teacherId
-     * @param studentIds
+     * @param teacherId 老师id
+     * @param studentIds 学生id列表
+     * @param question 问题
      * @return
      */
-    @RequestMapping(value = "/front/tosubject", method = RequestMethod.POST)
-    public BaseJsonResultVO toSubject(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentids") String studentIds) {
+    @RequestMapping(value = "/front/teacher/tosubject", method = RequestMethod.POST)
+    public BaseJsonResultVO toSubject(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentids") String studentIds,@RequestParam(value = "question") String question) {
         List<String> studentIdStrings = Arrays.asList(studentIds.split(","));
         List<Integer> studentIdList = studentIdStrings.stream().map(Integer::parseInt).collect(Collectors.toList());
         KeUser teacher = userService.findUserById(teacherId);
-        userService.teacherToSubject(teacher, studentIdList);
-        for(int id: studentIdList){
-            KeUser user = userService.findUserById(id);
-            user.setMessage(user.getMessage()+1);
-            userService.updateUser(user);
-        }
+        userService.teacherToSubject(teacher, studentIdList, question);
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
     }
+
+    /**
+     * 学生回答老师提问
+     * @param subjectId 问题id
+     * @param reply 回答
+     * @return
+     */
+    @RequestMapping(value = "/front/student/reply", method = RequestMethod.POST)
+    public BaseJsonResultVO reply(@RequestParam(value = "subejctid") Integer subjectId, @RequestParam(value = "reply") String reply) {
+        userService.studentReply(subjectId, reply);
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        return vo;
+    }
+
 }

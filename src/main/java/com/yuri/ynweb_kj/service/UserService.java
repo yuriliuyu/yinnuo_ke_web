@@ -1,14 +1,8 @@
 package com.yuri.ynweb_kj.service;
 
-import com.yuri.ynweb_kj.dao.KeFollowMapper;
-import com.yuri.ynweb_kj.dao.KeProgressMapper;
-import com.yuri.ynweb_kj.dao.KeSigninMapper;
-import com.yuri.ynweb_kj.dao.KeUserMapper;
+import com.yuri.ynweb_kj.dao.*;
 import com.yuri.ynweb_kj.dto.UserSimpleDto;
-import com.yuri.ynweb_kj.pojo.KeFollow;
-import com.yuri.ynweb_kj.pojo.KeProgress;
-import com.yuri.ynweb_kj.pojo.KeSignin;
-import com.yuri.ynweb_kj.pojo.KeUser;
+import com.yuri.ynweb_kj.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -24,9 +18,12 @@ public class UserService {
     KeFollowMapper keFollowMapper;
     @Autowired
     KeSigninMapper keSigninMapper;
-
     @Autowired
     KeProgressMapper keProgressMapper;
+    @Autowired
+    KeSubjectMapper keSubjectMapper;
+    @Autowired
+    KeReplyMapper keReplyMapper;
 
     public KeUser findUser(String userName, String password) {
         Map map = new HashMap<>();
@@ -37,9 +34,9 @@ public class UserService {
 
 
     public List<UserSimpleDto> teacherFollow(Integer teacherId) {
-        List<KeFollow> followList =  keFollowMapper.teacherFollow(teacherId);
+        List<KeFollow> followList = keFollowMapper.teacherFollow(teacherId);
         List<UserSimpleDto> resultList = new LinkedList<>();
-        for(int i =0;i<followList.size();i++){
+        for (int i = 0; i < followList.size(); i++) {
             KeUser student = userMapper.selectByPrimaryKey(followList.get(i).getStudentId());
             UserSimpleDto dto = new UserSimpleDto();
             dto.setId(student.getId());
@@ -78,9 +75,9 @@ public class UserService {
     }
 
     public List<UserSimpleDto> studentFollow(Integer studentId) {
-        List<KeFollow> followList =  keFollowMapper.studentFollow(studentId);
+        List<KeFollow> followList = keFollowMapper.studentFollow(studentId);
         List<UserSimpleDto> resultList = new LinkedList<>();
-        for(int i =0;i<followList.size();i++){
+        for (int i = 0; i < followList.size(); i++) {
             KeUser teacher = userMapper.selectByPrimaryKey(followList.get(i).getTeacherId());
             UserSimpleDto dto = new UserSimpleDto();
             dto.setId(teacher.getId());
@@ -95,7 +92,7 @@ public class UserService {
     }
 
     public KeFollow findFollow(Integer studentId, Integer teacherId) {
-        return keFollowMapper.findFollow(studentId,teacherId);
+        return keFollowMapper.findFollow(studentId, teacherId);
     }
 
     public void follow(Integer studentId, Integer teacherId) {
@@ -106,7 +103,29 @@ public class UserService {
         keFollowMapper.insert(follow);
     }
 
-    public void teacherToSubject(KeUser teacher, List<Integer> studentIdList) {
+    public void teacherToSubject(KeUser teacher, List<Integer> studentIdList, String question) {
+        for (Integer studentId : studentIdList) {
+            KeSubject keSubject = new KeSubject();
+            keSubject.setContent(question);
+            keSubject.setStudentId(studentId);
+            keSubject.setTeacherId(teacher.getId());
+            keSubject.setTeacherName(teacher.getName());
+            keSubjectMapper.insert(keSubject);
+            KeUser student = userMapper.selectByPrimaryKey(studentId);
+            student.setMessage(student.getMessage() + 1);
+            userMapper.updateByPrimaryKey(student);
+        }
 
+    }
+
+    public void studentReply(Integer subjectId, String reply) {
+        KeSubject keSubject = keSubjectMapper.selectByPrimaryKey(subjectId);
+        KeReply keReply = new KeReply();
+        keReply.setSubjectId(subjectId);
+        keReply.setReply(reply);
+        keReplyMapper.insert(keReply);
+        KeUser teacher = userMapper.selectByPrimaryKey(keSubject.getTeacherId());
+        teacher.setMessage(teacher.getMessage() + 1);
+        userMapper.updateByPrimaryKey(teacher);
     }
 }

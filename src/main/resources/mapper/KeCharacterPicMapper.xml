@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeCharacterPicMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeCharacterPic" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="character_id" property="characterId" jdbcType="INTEGER" />
+    <result column="picture" property="picture" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="is_right" property="isRight" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_character_pic
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeCharacterPic" >
+    insert into ke_character_pic (id, character_id, picture,
+      order_id, is_right, description
+      )
+    values (#{id,jdbcType=INTEGER}, #{characterId,jdbcType=INTEGER}, #{picture,jdbcType=VARCHAR},
+      #{orderId,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeCharacterPic" >
+    update ke_character_pic
+    set character_id = #{characterId,jdbcType=INTEGER},
+      picture = #{picture,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=INTEGER},
+      is_right = #{isRight,jdbcType=INTEGER},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, character_id, picture, order_id, is_right, description
+    from ke_character_pic
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, character_id, picture, order_id, is_right, description
+    from ke_character_pic
+  </select>
+  <select id="getCharacterPicByCharaId" resultMap="BaseResultMap" >
+    select picture, is_right from ke_character_pic where character_id=#{characterId} order by order_id desc
+  </select>
+</mapper>

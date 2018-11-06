@@ -15,7 +15,6 @@
     <result column="signin_num" property="signinNum" jdbcType="INTEGER" />
     <result column="credit" property="credit" jdbcType="INTEGER" />
     <result column="last_login" property="lastLogin" jdbcType="TIMESTAMP" />
-    <result column="login_total" property="loginTotal" jdbcType="INTEGER" />
     <result column="process" property="process" jdbcType="INTEGER" />
     <result column="exercise_done" property="exerciseDone" jdbcType="INTEGER" />
     <result column="exercise_right" property="exerciseRight" jdbcType="INTEGER" />
@@ -23,11 +22,6 @@
     <result column="exercise_all" property="exerciseAll" jdbcType="INTEGER" />
     <result column="message" property="message" jdbcType="INTEGER" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, login_total, process, exercise_done, exercise_right,
-    exercise_wrong, exercise_all, message
-  </sql>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ke_user
     where id = #{id,jdbcType=INTEGER}
@@ -37,16 +31,16 @@
       type, school, school_id,
       gender, email, portrait,
       major, signin_num, credit,
-      last_login, login_total, process,
-      exercise_done, exercise_right, exercise_wrong,
-      exercise_all, message)
+      last_login, process, exercise_done,
+      exercise_right, exercise_wrong, exercise_all,
+      message)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
       #{type,jdbcType=INTEGER}, #{school,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER},
       #{gender,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR},
       #{major,jdbcType=VARCHAR}, #{signinNum,jdbcType=INTEGER}, #{credit,jdbcType=INTEGER},
-      #{lastLogin,jdbcType=TIMESTAMP}, #{loginTotal,jdbcType=INTEGER}, #{process,jdbcType=INTEGER},
-      #{exerciseDone,jdbcType=INTEGER}, #{exerciseRight,jdbcType=INTEGER}, #{exerciseWrong,jdbcType=INTEGER},
-      #{exerciseAll,jdbcType=INTEGER}, #{message,jdbcType=INTEGER})
+      #{lastLogin,jdbcType=TIMESTAMP}, #{process,jdbcType=INTEGER}, #{exerciseDone,jdbcType=INTEGER},
+      #{exerciseRight,jdbcType=INTEGER}, #{exerciseWrong,jdbcType=INTEGER}, #{exerciseAll,jdbcType=INTEGER},
+      #{message,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeUser" >
     update ke_user
@@ -62,7 +56,6 @@
       signin_num = #{signinNum,jdbcType=INTEGER},
       credit = #{credit,jdbcType=INTEGER},
       last_login = #{lastLogin,jdbcType=TIMESTAMP},
-      login_total = #{loginTotal,jdbcType=INTEGER},
       process = #{process,jdbcType=INTEGER},
       exercise_done = #{exerciseDone,jdbcType=INTEGER},
       exercise_right = #{exerciseRight,jdbcType=INTEGER},
@@ -73,17 +66,22 @@
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, login_total, process, exercise_done, exercise_right,
-    exercise_wrong, exercise_all, message
+    signin_num, credit, last_login, process, exercise_done, exercise_right, exercise_wrong,
+    exercise_all, message
     from ke_user
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, login_total, process, exercise_done, exercise_right,
-    exercise_wrong, exercise_all, message
+    signin_num, credit, last_login, process, exercise_done, exercise_right, exercise_wrong,
+    exercise_all, message
     from ke_user
   </select>
+  <sql id="Base_Column_List" >
+    id, name, password, type, school, school_id, gender, email, portrait, major,
+    signin_num, credit, last_login, process, exercise_done, exercise_right, exercise_wrong,
+    exercise_all, message
+  </sql>
   <select id="findByNameAndPassword" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

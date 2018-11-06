@@ -37,8 +37,6 @@ public class KeUser {
 
     private Date lastLogin;
 
-    private Integer loginTotal;
-
     private Integer process;
 
     private Integer exerciseDone;
@@ -50,6 +48,4 @@ public class KeUser {
     private Integer exerciseAll;
 
     private Integer message;
-
-
 }

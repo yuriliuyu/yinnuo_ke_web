@@ -67,7 +67,7 @@
     select
     <include refid="Base_Column_List" />
     from ke_content
-    where category=#{category} and pid=#{pid} order by order_id desc
+    where category=#{category} and pid=#{pid} order by order_id
     <if test="limit != null">
       limit #{limit}
     </if>
