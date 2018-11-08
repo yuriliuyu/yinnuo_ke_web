@@ -13,4 +13,6 @@ public interface KeCharacterMapper {
     List<KeCharacter> selectAll();
 
     int updateByPrimaryKey(KeCharacter record);
+
+    List<Integer> getIdsByContentId(Integer contentId);
 }

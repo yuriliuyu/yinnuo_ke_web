@@ -88,6 +88,6 @@
     from ke_user where name = #{name} and password = #{password}
   </select>
   <select id="findUserByName" resultMap="BaseResultMap">
-    select id from ke_user where name = #{name}
+    select id,name,school,school_id from ke_user where name = #{name}
   </select>
 </mapper>

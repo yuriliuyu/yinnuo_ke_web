@@ -7,10 +7,10 @@
     <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
     <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
     <result column="student_id" property="studentId" jdbcType="INTEGER" />
-    <result column="reply_id" property="replyId" jdbcType="INTEGER" />
+    <result column="student_name" property="studentName" jdbcType="VARCHAR" />
+    <result column="is_read" property="isRead" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="level" property="level" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ke_subject
@@ -18,12 +18,12 @@
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
     insert into ke_subject (id, content, teacher_id,
-      teacher_name, student_id, reply_id,
-      create_time, update_time, level
+      teacher_name, student_id, student_name,
+      is_read, create_time, update_time
       )
     values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER},
-      #{teacherName,jdbcType=VARCHAR}, #{studentId,jdbcType=INTEGER}, #{replyId,jdbcType=INTEGER},
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{level,jdbcType=INTEGER}
+      #{teacherName,jdbcType=VARCHAR}, #{studentId,jdbcType=INTEGER}, #{studentName,jdbcType=VARCHAR},
+      #{isRead,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeSubject" >
@@ -32,21 +32,55 @@
       teacher_id = #{teacherId,jdbcType=INTEGER},
       teacher_name = #{teacherName,jdbcType=VARCHAR},
       student_id = #{studentId,jdbcType=INTEGER},
-      reply_id = #{replyId,jdbcType=INTEGER},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      level = #{level,jdbcType=INTEGER}
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, content, teacher_id, teacher_name, student_id, reply_id, create_time,
-    update_time, level
+    select id, content, teacher_id, teacher_name, student_id, student_name, is_read,
+    create_time, update_time
     from ke_subject
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, content, teacher_id, teacher_name, student_id, reply_id, create_time,
-    update_time, level
+    select id, content, teacher_id, teacher_name, student_id, student_name, is_read,
+    create_time, update_time
     from ke_subject
   </select>
+  <select id="getNextUnreadSubjectTeacherId" resultType="java.lang.Integer">
+    select teacher_id from ke_subject where is_read = 0 order by create_time limit 1
+  </select>
+  <select id="studentMessageList" resultMap="BaseResultMap">
+    select id, content, teacher_name,teacher_id from ke_subject where student_id=#{studentId} and teacher_id=#{nextTeacherId}
+    <if test="isRead !=null">
+      and is_read =#{isRead}
+    </if>
+    order by create_time desc
+  </select>
+  <select id="updateSubjectReadable" >
+    update ke_subject set is_read = 1 where student_id=#{studentId} and teacher_id=#{nextTeacherId}
+  </select>
+  <select id="getNextSubjectTeacherId" resultType="java.lang.Integer">
+    select teacher_id from ke_subject
+    <if test="teacherId != null">
+      <if test="type == 1">
+        where teacher_id &lt; #{teacherId}
+      </if>
+      <if test="type == 2">
+        where teacher_id &gt; #{teacherId}
+      </if>
+      <if test="type == null">
+        where teacher_id = 0
+      </if>
+    </if>
+    <if test="teacherId == null">
+      <if test="type != null">
+        where teacher_id=0
+      </if>
+    </if>
+    order by teacher_id limit 1
+  </select>
+
 </mapper>

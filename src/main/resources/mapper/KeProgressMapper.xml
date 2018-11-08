@@ -4,9 +4,9 @@
   <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeProgress" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="student_id" property="studentId" jdbcType="INTEGER" />
-    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="date" property="date" jdbcType="DATE" />
     <result column="video" property="video" jdbcType="INTEGER" />
-    <result column="subject" property="subject" jdbcType="INTEGER" />
+    <result column="test" property="test" jdbcType="INTEGER" />
     <result column="credit" property="credit" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -16,31 +16,31 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeProgress" >
-    insert into ke_progress (id, student_id, date, 
-      video, subject, credit, 
+    insert into ke_progress (id, student_id, date,
+      video, test, credit,
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP}, 
-      #{video,jdbcType=INTEGER}, #{subject,jdbcType=INTEGER}, #{credit,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{date,jdbcType=DATE},
+      #{video,jdbcType=INTEGER}, #{test,jdbcType=INTEGER}, #{credit,jdbcType=INTEGER},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeProgress" >
     update ke_progress
     set student_id = #{studentId,jdbcType=INTEGER},
-      date = #{date,jdbcType=TIMESTAMP},
+      date = #{date,jdbcType=DATE},
       video = #{video,jdbcType=INTEGER},
-      subject = #{subject,jdbcType=INTEGER},
+      test = #{test,jdbcType=INTEGER},
       credit = #{credit,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, student_id, date, video, subject, credit, create_time, update_time
+    select id, student_id, date, video, test, credit, create_time, update_time
     from ke_progress
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, student_id, date, video, subject, credit, create_time, update_time
+    select id, student_id, date, video, test, credit, create_time, update_time
     from ke_progress
   </select>
   <select id="findProgressList" resultMap="BaseResultMap">
@@ -56,5 +56,10 @@
       and date_sub(curdate(), interval 30 day) &lt;= date(`date`)
     </if>
     order by create_time
+  </select>
+  <select id="findProgress" resultMap="BaseResultMap" >
+    select id, student_id, date, video, test, signin, create_time, update_time
+    from ke_progress
+    where student_id=#{studentId} and `date`=#{date}
   </select>
 </mapper>

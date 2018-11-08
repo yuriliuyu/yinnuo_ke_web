@@ -22,5 +22,5 @@ public interface KeUserMapper {
     KeUser findByNameAndPassword(Map map);
 
 
-    KeUser findUserByName(Integer name);
+    KeUser findUserByName(String name);
 }

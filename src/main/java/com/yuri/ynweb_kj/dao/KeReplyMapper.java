@@ -3,6 +3,7 @@ package com.yuri.ynweb_kj.dao;
 import com.yuri.ynweb_kj.pojo.KeReply;
 
 import java.util.List;
+import java.util.Map;
 
 public interface KeReplyMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,14 @@ public interface KeReplyMapper {
     List<KeReply> selectAll();
 
     int updateByPrimaryKey(KeReply record);
+
+    KeReply getBySubjectId(Integer subjectId);
+
+    void updateReplyReadable(Map map);
+
+    List<Integer> teacherMessageList(Map map);
+
+    KeReply getReplyBySubjectId(Integer subjectId);
+
+    Integer getByTeacherIdAndStudentId(Map map);
 }

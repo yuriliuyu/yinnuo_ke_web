@@ -4,16 +4,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
 @Data
 @ToString
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class KeContentReadable {
+public class KeTestDone {
     private Integer id;
+
+    private Integer testId;
+
+    private String qustion;
 
     private Integer studentId;
 
-    private Integer category;
+    private Integer isRight;
 
-    private Integer orderId;
+    private Date createTime;
 
+    private Date updateTime;
 }

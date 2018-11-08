@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeContentDoneMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeContentDone" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="category" property="category" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_content_done
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeContentDone" >
+    insert into ke_content_done (id, content_id, student_id,
+      order_id, category)
+    values (#{id,jdbcType=INTEGER}, #{contentId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER},
+      #{orderId,jdbcType=INTEGER}, #{category,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeContentDone" >
+    update ke_content_done
+    set content_id = #{contentId,jdbcType=INTEGER},
+      student_id = #{studentId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      category = #{category,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, content_id, student_id, order_id, category
+    from ke_content_done
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, content_id, student_id, order_id, category
+    from ke_content_done
+  </select>
+  <select id="getMaxReadOrderId" resultType="java.lang.Integer">
+    select order_id from ke_content_done where student_id=#{studentId} and category=#{category}
+  </select>
+  <select id="getContentDone" resultMap="BaseResultMap" >
+    select id from ke_content_done where student_id=#{studentId} and content_id=#{contentId}
+  </select>
+</mapper>

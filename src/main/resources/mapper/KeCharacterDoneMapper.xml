@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeCharacterDoneMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeCharacterDone" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="character_id" property="characterId" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_character_done
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeCharacterDone" >
+    insert into ke_character_done (id, character_id, student_id,
+      content_id)
+    values (#{id,jdbcType=INTEGER}, #{characterId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER},
+      #{contentId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeCharacterDone" >
+    update ke_character_done
+    set character_id = #{characterId,jdbcType=INTEGER},
+      student_id = #{studentId,jdbcType=INTEGER},
+      content_id = #{contentId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, character_id, student_id, content_id
+    from ke_character_done
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, character_id, student_id, content_id
+    from ke_character_done
+  </select>
+  <select id="getCharacterDone" resultMap="BaseResultMap">
+    select id, character_id, student_id, content_id
+    from ke_character_done
+    where character_id=#{characterId} and student_id=#{studentId}
+  </select>
+  <select id="getDoneCharacterIdsByContentId" resultType="java.lang.Integer">
+    select character_id from ke_character_done where content_id=#{contentId} and student_id=#{studentId}
+  </select>
+</mapper>

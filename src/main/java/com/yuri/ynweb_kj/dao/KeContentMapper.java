@@ -20,4 +20,6 @@ public interface KeContentMapper {
     List<KeContent> getContentListByCategoryAndPid(Map map);
 
     List<ContentCountDto> getContentListCount();
+
+    Integer getNextReadableOrderId(Map map);
 }

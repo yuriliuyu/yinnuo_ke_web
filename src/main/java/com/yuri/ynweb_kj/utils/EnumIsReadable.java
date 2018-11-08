@@ -1,16 +1,12 @@
 package com.yuri.ynweb_kj.utils;
 
-public enum EnumContentType {
+public enum EnumIsReadable {
 
-    VIDEO(1,"视频"),
+    READABLE(1,"可读"),
 
-    TEXT(2, "图文"),
+    UNREADABLE(-1, "不可读");
 
-    TEST(3, "随堂测试"),
-
-    CASE(4, "案例分析");
-
-    private EnumContentType(int code, String description) {
+    private EnumIsReadable(int code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -24,4 +20,5 @@ public enum EnumContentType {
     public String getDescription(){
         return description;
     }
+
 }

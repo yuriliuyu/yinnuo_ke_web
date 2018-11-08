@@ -17,13 +17,12 @@ public class KeProgress {
 
     private Integer video;
 
-    private Integer subject;
+    private Integer test;
 
     private Integer credit;
 
     private Date createTime;
 
     private Date updateTime;
-
 
 }

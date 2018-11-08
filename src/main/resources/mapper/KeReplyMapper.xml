@@ -5,34 +5,58 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
     <result column="reply" property="reply" jdbcType="VARCHAR" />
+    <result column="is_read" property="isRead" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ke_reply
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeReply" >
-    insert into ke_reply (id, subject_id, reply, 
-      create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{reply,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into ke_reply (id, subject_id, reply,
+      is_read, create_time, update_time,
+      student_id, teacher_id)
+    values (#{id,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{reply,jdbcType=VARCHAR},
+      #{isRead,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{studentId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeReply" >
     update ke_reply
     set subject_id = #{subjectId,jdbcType=INTEGER},
       reply = #{reply,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      student_id = #{studentId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, subject_id, reply, create_time, update_time
+    select id, subject_id, reply, is_read, create_time, update_time, student_id, teacher_id
     from ke_reply
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, subject_id, reply, create_time, update_time
+    select id, subject_id, reply, is_read, create_time, update_time, student_id, teacher_id
     from ke_reply
+  </select>
+  <select id="getBySubjectId" resultMap="BaseResultMap" >
+    select id, reply from ke_reply where subject_id=#{subjectId}
+  </select>
+  <select id="updateReplyReadable">
+    update ke_reply set is_read = 1 where student_id=#{nextStudentId} and teacher_id=#{teacherId}
+  </select>
+  <select id="teacherMessageList" resultType="java.lang.Integer">
+    select subject_id from ke_reply where student_id=#{nextStudentId} and teacher_id=#{teacherId} and is_read=0
+  </select>
+  <select id="getReplyBySubjectId" resultMap="BaseResultMap" >
+    select id from ke_reply where subject_id=#{subjectId}
+  </select>
+  <select id="getByTeacherIdAndStudentId" resultType="java.lang.Integer">
+    select count(id) from ke_reply
+    where student_id=#{studentId} and teacher_id=#{teacherId} and is_read=#{unread}
   </select>
 </mapper>

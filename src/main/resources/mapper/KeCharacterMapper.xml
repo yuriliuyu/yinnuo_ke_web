@@ -10,6 +10,7 @@
     <result column="gender" property="gender" jdbcType="INTEGER" />
     <result column="background_pic_3" property="backgroundPic3" jdbcType="VARCHAR" />
     <result column="background_pic_4" property="backgroundPic4" jdbcType="VARCHAR" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
     <result column="background_text" property="backgroundText" jdbcType="LONGVARCHAR" />
     <result column="information" property="information" jdbcType="LONGVARCHAR" />
     <result column="question" property="question" jdbcType="LONGVARCHAR" />
@@ -20,16 +21,16 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeCharacter" >
-    insert into ke_character (id, background_pic_1, protrait, 
-      name, age, gender, 
-      background_pic_3, background_pic_4, background_text, 
-      information, question, summary
-      )
-    values (#{id,jdbcType=INTEGER}, #{backgroundPic1,jdbcType=VARCHAR}, #{protrait,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{gender,jdbcType=INTEGER}, 
-      #{backgroundPic3,jdbcType=VARCHAR}, #{backgroundPic4,jdbcType=VARCHAR}, #{backgroundText,jdbcType=LONGVARCHAR}, 
-      #{information,jdbcType=LONGVARCHAR}, #{question,jdbcType=LONGVARCHAR}, #{summary,jdbcType=LONGVARCHAR}
-      )
+    insert into ke_character (id, background_pic_1, protrait,
+      name, age, gender,
+      background_pic_3, background_pic_4, content_id,
+      background_text, information, question,
+      summary)
+    values (#{id,jdbcType=INTEGER}, #{backgroundPic1,jdbcType=VARCHAR}, #{protrait,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{gender,jdbcType=INTEGER},
+      #{backgroundPic3,jdbcType=VARCHAR}, #{backgroundPic4,jdbcType=VARCHAR}, #{contentId,jdbcType=INTEGER},
+      #{backgroundText,jdbcType=LONGVARCHAR}, #{information,jdbcType=LONGVARCHAR}, #{question,jdbcType=LONGVARCHAR},
+      #{summary,jdbcType=LONGVARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeCharacter" >
     update ke_character
@@ -40,6 +41,7 @@
       gender = #{gender,jdbcType=INTEGER},
       background_pic_3 = #{backgroundPic3,jdbcType=VARCHAR},
       background_pic_4 = #{backgroundPic4,jdbcType=VARCHAR},
+      content_id = #{contentId,jdbcType=INTEGER},
       background_text = #{backgroundText,jdbcType=LONGVARCHAR},
       information = #{information,jdbcType=LONGVARCHAR},
       question = #{question,jdbcType=LONGVARCHAR},
@@ -47,14 +49,17 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, background_pic_1, protrait, name, age, gender, background_pic_3, background_pic_4, 
-    background_text, information, question, summary
+    select id, background_pic_1, protrait, name, age, gender, background_pic_3, background_pic_4,
+    content_id, background_text, information, question, summary
     from ke_character
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, background_pic_1, protrait, name, age, gender, background_pic_3, background_pic_4, 
-    background_text, information, question, summary
+    select id, background_pic_1, protrait, name, age, gender, background_pic_3, background_pic_4,
+    content_id, background_text, information, question, summary
     from ke_character
+  </select>
+  <select id="getIdsByContentId" resultType="java.lang.Integer">
+    select id from ke_character where content_id=#{contentId}
   </select>
 </mapper>

@@ -16,4 +16,6 @@ public interface KeProgressMapper {
     int updateByPrimaryKey(KeProgress record);
 
     List<KeProgress> findProgressList(Map map);
+
+    KeProgress findProgress(Map map);
 }

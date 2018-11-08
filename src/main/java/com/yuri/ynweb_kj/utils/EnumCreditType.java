@@ -1,16 +1,14 @@
 package com.yuri.ynweb_kj.utils;
 
-public enum EnumContentType {
+public enum EnumCreditType {
 
-    VIDEO(1,"视频"),
+    VIDEO(5,"视频"),
 
-    TEXT(2, "图文"),
+    SIGNIN(2, "签到"),
 
-    TEST(3, "随堂测试"),
+    TEST(3, "测试");
 
-    CASE(4, "案例分析");
-
-    private EnumContentType(int code, String description) {
+    private EnumCreditType(int code, String description) {
         this.code = code;
         this.description = description;
     }

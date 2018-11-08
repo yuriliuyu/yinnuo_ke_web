@@ -15,7 +15,14 @@ public class KeReply {
 
     private String reply;
 
+    private Integer isRead;
+
     private Date createTime;
 
     private Date updateTime;
+
+    private Integer studentId;
+
+    private Integer teacherId;
+
 }

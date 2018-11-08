@@ -1,16 +1,12 @@
 package com.yuri.ynweb_kj.utils;
 
-public enum EnumContentType {
+public enum EnumIsAnswer {
 
-    VIDEO(1,"视频"),
+    YES(1,"是"),
 
-    TEXT(2, "图文"),
+    NO(-1, "否");
 
-    TEST(3, "随堂测试"),
-
-    CASE(4, "案例分析");
-
-    private EnumContentType(int code, String description) {
+    private EnumIsAnswer(int code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -24,4 +20,5 @@ public enum EnumContentType {
     public String getDescription(){
         return description;
     }
+
 }

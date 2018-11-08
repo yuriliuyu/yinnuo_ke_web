@@ -43,5 +43,11 @@
         <table schema="yinnuo_web" tableName="ke_content_character"/>
         <table schema="yinnuo_web" tableName="ke_content_readable"/>
         <table schema="yinnuo_web" tableName="ke_reply"/>
+        <table schema="yinnuo_web" tableName="ke_school"/>
+        <table schema="yinnuo_web" tableName="ke_test"/>
+        <table schema="yinnuo_web" tableName="ke_test_option"/>
+        <table schema="yinnuo_web" tableName="ke_test_done"/>
+        <table schema="yinnuo_web" tableName="ke_character_done"/>
+        <table schema="yinnuo_web" tableName="ke_content_done"/>
     </context>
 </generatorConfiguration>

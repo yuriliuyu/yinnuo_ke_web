@@ -24,6 +24,8 @@ public class KeCharacter {
 
     private String backgroundPic4;
 
+    private Integer contentId;
+
     private String backgroundText;
 
     private String information;

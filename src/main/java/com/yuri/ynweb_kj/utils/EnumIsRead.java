@@ -1,16 +1,12 @@
 package com.yuri.ynweb_kj.utils;
 
-public enum EnumContentType {
+public enum EnumIsRead {
 
-    VIDEO(1,"视频"),
+    UNREAD(-1,"未读"),
 
-    TEXT(2, "图文"),
+    READED(1, "已读");
 
-    TEST(3, "随堂测试"),
-
-    CASE(4, "案例分析");
-
-    private EnumContentType(int code, String description) {
+    private EnumIsRead(int code, String description) {
         this.code = code;
         this.description = description;
     }

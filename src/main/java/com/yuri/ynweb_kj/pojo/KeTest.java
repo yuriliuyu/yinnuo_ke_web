@@ -5,24 +5,19 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.Date;
-
 @Data
 @ToString
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class KeSubject {
+public class KeTest {
     private Integer id;
 
-    private String content;
+    private String question;
 
-    private Integer teacherId;
+    private Integer contentId;
 
-    private String teacherName;
+    private String picUrl;
 
-    private Integer studentId;
-
-    private String studentName;
-
-    private Integer isRead;
+    private Integer orderId;
 
     private Date createTime;
 

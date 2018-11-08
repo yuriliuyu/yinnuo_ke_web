@@ -37,7 +37,6 @@
   </select>
   <select id="getBySid" resultMap="BaseResultMap">
     select `date` from ke_signin
-    where student_id=#{studentId} and DATE_FORMAT( `date`, '%Y%m' ) = DATE_FORMAT( CURDATE() , '%Y%m' )
-    order by create_time
+    where student_id=#{studentId} and month(`date`) = month(now()) order by create_time
   </select>
 </mapper>

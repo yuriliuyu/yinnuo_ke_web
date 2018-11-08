@@ -1,17 +1,12 @@
 package com.yuri.ynweb_kj.controller;
 
 import com.yuri.ynweb_kj.dto.ProgressDto;
+import com.yuri.ynweb_kj.dto.SubjectDto;
 import com.yuri.ynweb_kj.dto.UCenterDto;
 import com.yuri.ynweb_kj.dto.UserSimpleDto;
-import com.yuri.ynweb_kj.pojo.KeFollow;
-import com.yuri.ynweb_kj.pojo.KeProgress;
-import com.yuri.ynweb_kj.pojo.KeSignin;
-import com.yuri.ynweb_kj.pojo.KeUser;
+import com.yuri.ynweb_kj.pojo.*;
 import com.yuri.ynweb_kj.service.UserService;
-import com.yuri.ynweb_kj.utils.EnumGender;
-import com.yuri.ynweb_kj.utils.EnumResCode;
-import com.yuri.ynweb_kj.utils.EnumUserType;
-import com.yuri.ynweb_kj.utils.TimeUtils;
+import com.yuri.ynweb_kj.utils.*;
 import com.yuri.ynweb_kj.vo.BaseJsonResultVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +30,7 @@ public class UserController {
 
     /**
      * 登录接口
+     *
      * @param userName 用户名
      * @param password 密码
      * @return BaseJsonResultVO
@@ -67,49 +63,57 @@ public class UserController {
 
     /**
      * 查找关注老师的学生列表
-     * @param teacherId
-     * @return
+     *
+     * @param teacherId 老师id
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/teacher/follow", method = RequestMethod.POST)
     public BaseJsonResultVO followTeacher(@RequestParam(value = "teacherid") Integer teacherId) {
         List<UserSimpleDto> studentList = userService.teacherFollow(teacherId);
-        if (studentList != null && !studentList.isEmpty()) {
-            BaseJsonResultVO vo = new BaseJsonResultVO();
-            vo.setCode(EnumResCode.SUCCESSFUL.value());
-            vo.setData(studentList);
-            vo.setMessage("ok");
-            return vo;
-        } else {
-            BaseJsonResultVO vo = new BaseJsonResultVO();
-            vo.setCode(EnumResCode.SERVER_ERROR.value());
-            vo.setMessage("ok");
-            return vo;
-        }
-    }
-
-    /**
-     * 学生关注老师
-     * @param studentId
-     * @return
-     */
-    @RequestMapping(value = "/front/student/tofollow", method = RequestMethod.POST)
-    public BaseJsonResultVO toFollowTeacher(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teachername") Integer teacherName) {
-        KeUser teacher = userService.findUserByName(teacherName);
-        KeFollow follow = userService.findFollow(studentId, teacher.getId());
         BaseJsonResultVO vo = new BaseJsonResultVO();
-        if(follow != null){
-            vo.setCode(EnumResCode.SERVER_ERROR.value());
-            vo.setMessage("已经关注");
-        }else{
-            userService.follow(studentId, teacher.getId());
-            vo.setCode(EnumResCode.SUCCESSFUL.value());
-            vo.setMessage("ok");
-        }
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setData(studentList);
+        vo.setMessage("ok");
         return vo;
     }
 
     /**
+     * 学生关注老师
+     *
+     * @param studentId
+     * @return
+     */
+    @RequestMapping(value = "/front/student/tofollow", method = RequestMethod.POST)
+    public BaseJsonResultVO toFollowTeacher(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teachername") String teacherName) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        KeUser teacher = userService.findUserByName(teacherName);
+        KeUser student = userService.findUserById(studentId);
+        if (teacher == null) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("系统无该名老师，不能关注");
+            return vo;
+        }
+        if (teacher.getSchoolId() != null && teacher.getSchoolId() != student.getSchoolId()) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("不是同校，不能关注");
+            return vo;
+        }
+        KeFollow follow = userService.findFollow(studentId, teacher.getId());
+        if (follow != null) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("已经关注");
+            return vo;
+        } else {
+            userService.follow(studentId, teacher.getId());
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }
+    }
+
+    /**
      * 查找学生关注的老师列表
+     *
      * @param studentId
      * @return
      */
@@ -133,6 +137,7 @@ public class UserController {
 
     /**
      * 查询个人未读消息数
+     *
      * @param userId
      * @return
      */
@@ -155,27 +160,30 @@ public class UserController {
 
     /**
      * 学生签到
-     * @param studentId
+     *
+     * @param studentId 学生id
      * @return
      */
     @RequestMapping(value = "/front/student/signin", method = RequestMethod.POST)
     public BaseJsonResultVO singin(@RequestParam(value = "studentid") Integer studentId) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
         KeUser student = userService.findUserById(studentId);
         if (student != null) {
-            try {
-                userService.signin(studentId);
-                student.setSigninNum(student.getSigninNum() + 1);
-                student.setCredit(student.getCredit() + 2);
-                userService.updateUser(student);
-            } catch (Exception e) {
-                logger.error("重复签到:studentId:" + studentId);
+            KeProgress progress = userService.getSignin(studentId, TimeUtils.makeYMDStringFormat(new Date()));
+            if(progress != null){
+                vo.setCode(EnumResCode.SERVER_ERROR.value());
+                vo.setMessage("重复签到");
+                return vo;
             }
-            BaseJsonResultVO vo = new BaseJsonResultVO();
+            userService.signin(studentId);
+            student.setSigninNum(student.getSigninNum() + 1);
+            userService.updateUser(student);
+            userService.updateProgress(student, EnumCreditType.SIGNIN.value(), 0, 0);
+
             vo.setCode(EnumResCode.SUCCESSFUL.value());
             vo.setMessage("ok");
             return vo;
         } else {
-            BaseJsonResultVO vo = new BaseJsonResultVO();
             vo.setCode(EnumResCode.SERVER_ERROR.value());
             vo.setMessage("用户不存在");
             return vo;
@@ -184,6 +192,7 @@ public class UserController {
 
     /**
      * 学生个人中心
+     *
      * @param studentId
      * @return
      */
@@ -210,6 +219,7 @@ public class UserController {
             dto.setPortrait(student.getPortrait());
             dto.setName(student.getName());
             dto.setSigninNum(student.getSigninNum());
+            dto.setSignin(resultList);
             BaseJsonResultVO vo = new BaseJsonResultVO();
             vo.setCode(EnumResCode.SUCCESSFUL.value());
             vo.setData(dto);
@@ -225,7 +235,8 @@ public class UserController {
 
     /**
      * 学习进度数据统计
-     * @param studentId
+     *
+     * @param studentId 学生id
      * @param type      1-今日，2-近7日，3-近30日，4-全部
      * @return
      */
@@ -249,7 +260,8 @@ public class UserController {
 
     /**
      * 学习进度个人情况
-     * @param studentId
+     *
+     * @param studentId 学生id
      * @return
      */
     @RequestMapping(value = "/front/student/progess_user", method = RequestMethod.POST)
@@ -261,8 +273,8 @@ public class UserController {
         result.setExerciseRight(student.getExerciseRight());
         result.setExerciseWill(student.getExerciseAll() - student.getExerciseDone());
         result.setExerciseWrong(student.getExerciseDone() - student.getExerciseRight());
-        result.setDoneRate(student.getExerciseAll() == 0 ? 0 : (int) Math.floor(student.getExerciseDone()*100 / student.getExerciseAll()));
-        result.setRightRate(student.getExerciseDone() == 0 ? 0 : (int) Math.floor(student.getExerciseRight()*100 / student.getExerciseDone()));
+        result.setDoneRate(student.getExerciseAll() == 0 ? 0 : (int) Math.floor(student.getExerciseDone() * 100 / student.getExerciseAll()));
+        result.setRightRate(student.getExerciseDone() == 0 ? 0 : (int) Math.floor(student.getExerciseRight() * 100 / student.getExerciseDone()));
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setData(result);
@@ -272,18 +284,25 @@ public class UserController {
 
     /**
      * 老师向学生提问
-     * @param teacherId 老师id
+     *
+     * @param teacherId  老师id
      * @param studentIds 学生id列表
-     * @param question 问题
+     * @param question   问题
      * @return
      */
     @RequestMapping(value = "/front/teacher/tosubject", method = RequestMethod.POST)
-    public BaseJsonResultVO toSubject(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentids") String studentIds,@RequestParam(value = "question") String question) {
+    public BaseJsonResultVO toSubject(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentids") String studentIds, @RequestParam(value = "question") String question) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        if (StringUtils.isEmpty(question)) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("问题不能为空");
+            return vo;
+        }
         List<String> studentIdStrings = Arrays.asList(studentIds.split(","));
         List<Integer> studentIdList = studentIdStrings.stream().map(Integer::parseInt).collect(Collectors.toList());
         KeUser teacher = userService.findUserById(teacherId);
         userService.teacherToSubject(teacher, studentIdList, question);
-        BaseJsonResultVO vo = new BaseJsonResultVO();
+
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
@@ -291,17 +310,165 @@ public class UserController {
 
     /**
      * 学生回答老师提问
+     *
      * @param subjectId 问题id
-     * @param reply 回答
+     * @param reply     回答
      * @return
      */
     @RequestMapping(value = "/front/student/reply", method = RequestMethod.POST)
-    public BaseJsonResultVO reply(@RequestParam(value = "subejctid") Integer subjectId, @RequestParam(value = "reply") String reply) {
-        userService.studentReply(subjectId, reply);
+    public BaseJsonResultVO reply(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "subjectid") Integer subjectId, @RequestParam(value = "reply") String reply) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
+        if (StringUtils.isEmpty(reply)) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("回答不能为空");
+            return vo;
+        }
+        if (userService.getReplyBySubjectId(subjectId) != null) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("此问题已有回答");
+            return vo;
+        }
+        KeSubject subject = userService.getSubjectById(subjectId);
+        if (studentId != subject.getStudentId()) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("学生id非法");
+            return vo;
+        }
+        userService.studentReply(studentId, subject.getTeacherId(), subjectId, reply);
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
     }
+
+    /**
+     * 学生通过未读消息查看互动列表
+     *
+     * @param studentId 学生id
+     * @return
+     */
+    @RequestMapping(value = "/front/student/message/list", method = RequestMethod.POST)
+    public BaseJsonResultVO studentMessageList(@RequestParam(value = "studentid") Integer studentId) {
+        Integer nextTeacherId = userService.getNextUnreadSubjectTeacherId();
+        List<KeSubject> subjectList = userService.studentMessageList(studentId, nextTeacherId, EnumIsRead.UNREAD.value());
+        List<SubjectDto> resultList = new LinkedList<>();
+        for (KeSubject subject : subjectList) {
+            SubjectDto dto = new SubjectDto();
+            dto.setSubjectId(subject.getId());
+            dto.setSubjectContent(subject.getContent());
+            dto.setTeacherName(subject.getTeacherName());
+            dto.setTeacherId(subject.getTeacherId());
+            KeReply reply = userService.getStudentReply(subject.getId());
+            dto.setReply(reply == null ? null : reply.getReply());
+            dto.setReplyId(reply == null ? null : reply.getId());
+            resultList.add(dto);
+        }
+        userService.updateSubjectReadable(studentId, nextTeacherId);
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        vo.setData(resultList);
+        return vo;
+    }
+
+    /**
+     * 老师通过未读消息查看师生互动信息
+     *
+     * @param teacherId 老师id
+     * @param studentId 学生id
+     * @return
+     */
+    @RequestMapping(value = "/front/teacher/message/list", method = RequestMethod.POST)
+    public BaseJsonResultVO teacherMessageList(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentid") Integer studentId) {
+        List<Integer> subjectIdList = userService.teacherMessageList(studentId, teacherId);
+        List<SubjectDto> resultList = new LinkedList<>();
+        for (Integer id : subjectIdList) {
+            KeSubject subject = userService.getSubjectById(id);
+            SubjectDto dto = new SubjectDto();
+            dto.setSubjectId(id);
+            dto.setStudentName(subject.getStudentName());
+            dto.setSubjectContent(subject.getContent());
+            dto.setTeacherName(subject.getTeacherName());
+            dto.setTeacherId(subject.getTeacherId());
+            KeReply reply = userService.getStudentReply(subject.getId());
+            dto.setReply(reply == null ? null : reply.getReply());
+            dto.setReplyId(reply == null ? null : reply.getId());
+            resultList.add(dto);
+        }
+        userService.updateReplyReadable(teacherId, studentId);
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        vo.setData(resultList);
+        return vo;
+    }
+
+    /**
+     * 学生查看互动列表
+     *
+     * @param studentId 学生id
+     * @param teacherId 老师id
+     * @param type      1-上一个，2-下一个
+     * @return
+     */
+    @RequestMapping(value = "/front/student/subject/list", method = RequestMethod.POST)
+    public BaseJsonResultVO studentSubjectList(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teacherid", required = false) Integer teacherId,
+                                               @RequestParam(value = "type", required = false) Integer type) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+
+        if (type != null && type != 1 && type != 2) {
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("参数非法");
+            return vo;
+        }
+        Integer nextTeacherId = userService.getNextSubjectTeacherId(type, teacherId);
+        List<KeSubject> subjectList = userService.studentMessageList(studentId, nextTeacherId, null);
+        List<SubjectDto> resultList = new LinkedList<>();
+        for (KeSubject subject : subjectList) {
+            SubjectDto dto = new SubjectDto();
+            dto.setSubjectId(subject.getId());
+            dto.setSubjectContent(subject.getContent());
+            dto.setTeacherName(subject.getTeacherName());
+            dto.setTeacherId(subject.getTeacherId());
+            KeReply reply = userService.getStudentReply(subject.getId());
+            dto.setReply(reply == null ? null : reply.getReply());
+            dto.setReplyId(reply == null ? null : reply.getId());
+            resultList.add(dto);
+        }
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        vo.setData(resultList);
+        return vo;
+    }
+
+    /**
+     * 老师查看互动列表
+     *
+     * @param studentId 学生id
+     * @param teacherId 老师id
+     * @return
+     */
+    @RequestMapping(value = "/front/teacher/subject/list", method = RequestMethod.POST)
+    public BaseJsonResultVO teacherSubjectList(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teacherid") Integer teacherId) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        List<KeSubject> subjectList = userService.studentMessageList(studentId, teacherId, null);
+        List<SubjectDto> resultList = new LinkedList<>();
+        for (KeSubject subject : subjectList) {
+            SubjectDto dto = new SubjectDto();
+            dto.setSubjectId(subject.getId());
+            dto.setSubjectContent(subject.getContent());
+            dto.setTeacherName(subject.getTeacherName());
+            dto.setStudentName(subject.getStudentName());
+            dto.setTeacherId(subject.getTeacherId());
+            KeReply reply = userService.getStudentReply(subject.getId());
+            dto.setReply(reply == null ? null : reply.getReply());
+            dto.setReplyId(reply == null ? null : reply.getId());
+            resultList.add(dto);
+        }
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        vo.setData(resultList);
+        return vo;
+    }
+
 
 }

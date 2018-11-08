@@ -79,6 +79,7 @@
   <select id="getContentListCount" resultMap="listcount">
     select count(1), category from ke_content where pid=-1 group by category order by category
   </select>
-
-
+  <select id="getNextReadableOrderId" resultType="java.lang.Integer">
+    select order_id from ke_content where category=#{category} order_id > #{orderId} limit 1
+  </select>
 </mapper>

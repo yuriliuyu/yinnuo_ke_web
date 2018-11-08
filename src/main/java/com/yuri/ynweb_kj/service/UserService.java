@@ -1,16 +1,23 @@
 package com.yuri.ynweb_kj.service;
 
+import com.sun.javafx.tk.FontLoader;
 import com.yuri.ynweb_kj.dao.*;
 import com.yuri.ynweb_kj.dto.UserSimpleDto;
 import com.yuri.ynweb_kj.pojo.*;
+import com.yuri.ynweb_kj.utils.EnumIsRead;
+import com.yuri.ynweb_kj.utils.TimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.util.*;
 
 @Service
 public class UserService {
+
+    private Logger logger = LoggerFactory.getLogger("FILE_LOG");
+
 
     @Autowired
     KeUserMapper userMapper;
@@ -41,7 +48,12 @@ public class UserService {
             UserSimpleDto dto = new UserSimpleDto();
             dto.setId(student.getId());
             dto.setName(student.getName());
-            dto.setMessage(student.getMessage());
+            Map map = new HashMap<>();
+            map.put("studentId", followList.get(i).getStudentId());
+            map.put("teacherId", teacherId);
+            map.put("isRead", EnumIsRead.UNREAD.value());
+            Integer unreadCount = keReplyMapper.getByTeacherIdAndStudentId(map);
+            dto.setMessage(unreadCount);
             resultList.add(dto);
         }
         return resultList;
@@ -87,7 +99,7 @@ public class UserService {
         return resultList;
     }
 
-    public KeUser findUserByName(Integer name) {
+    public KeUser findUserByName(String name) {
         return userMapper.findUserByName(name);
     }
 
@@ -104,28 +116,126 @@ public class UserService {
     }
 
     public void teacherToSubject(KeUser teacher, List<Integer> studentIdList, String question) {
+        List<KeFollow> followList = keFollowMapper.teacherFollow(teacher.getId());
+        List<Integer> followStudentIdList = new LinkedList<>();
+        for (KeFollow follow : followList) {
+            followStudentIdList.add(follow.getStudentId());
+        }
         for (Integer studentId : studentIdList) {
+            if (!followStudentIdList.contains(studentId)) {
+                logger.error("{}老师并未关注id为{}的学生", new Object[]{teacher.getId(), studentId});
+                continue;
+            }
             KeSubject keSubject = new KeSubject();
             keSubject.setContent(question);
             keSubject.setStudentId(studentId);
             keSubject.setTeacherId(teacher.getId());
             keSubject.setTeacherName(teacher.getName());
-            keSubjectMapper.insert(keSubject);
+            keSubject.setIsRead(EnumIsRead.UNREAD.value());
+            keSubject.setCreateTime(new Date());
             KeUser student = userMapper.selectByPrimaryKey(studentId);
+            keSubject.setStudentName(student.getName());
+            keSubjectMapper.insert(keSubject);
             student.setMessage(student.getMessage() + 1);
             userMapper.updateByPrimaryKey(student);
         }
-
     }
 
-    public void studentReply(Integer subjectId, String reply) {
+    public void studentReply(Integer studentId, Integer teacherId, Integer subjectId, String reply) {
         KeSubject keSubject = keSubjectMapper.selectByPrimaryKey(subjectId);
         KeReply keReply = new KeReply();
         keReply.setSubjectId(subjectId);
+        keReply.setStudentId(studentId);
+        keReply.setTeacherId(teacherId);
         keReply.setReply(reply);
+        keReply.setIsRead(EnumIsRead.UNREAD.value());
+        keReply.setCreateTime(new Date());
         keReplyMapper.insert(keReply);
         KeUser teacher = userMapper.selectByPrimaryKey(keSubject.getTeacherId());
         teacher.setMessage(teacher.getMessage() + 1);
         userMapper.updateByPrimaryKey(teacher);
+    }
+
+    public Integer getNextUnreadSubjectTeacherId() {
+        return keSubjectMapper.getNextUnreadSubjectTeacherId();
+    }
+
+    public List<KeSubject> studentMessageList(Integer studentId, Integer nextTeacherId, Integer isRead) {
+        Map map = new HashMap<>();
+        map.put("studentId", studentId);
+        map.put("nextTeacherId", nextTeacherId);
+        map.put("isRead", isRead);
+        return keSubjectMapper.studentMessageList(map);
+    }
+
+    public KeReply getStudentReply(Integer subjectId) {
+        return keReplyMapper.getBySubjectId(subjectId);
+    }
+
+    public void updateSubjectReadable(Integer studentId, Integer nextTeacherId) {
+        Map map = new HashMap<>();
+        map.put("studentId", studentId);
+        map.put("nextTeacherId", nextTeacherId);
+        keSubjectMapper.updateSubjectReadable(map);
+    }
+
+    public Integer getNextSubjectTeacherId(Integer type, Integer teacherId) {
+        Map map = new HashMap<>();
+        map.put("type", type);
+        map.put("teacherId", teacherId);
+        return keSubjectMapper.getNextSubjectTeacherId(map);
+    }
+
+    public void updateReplyReadable(Integer teacherId, Integer nextStudentId) {
+        Map map = new HashMap<>();
+        map.put("teacherId", teacherId);
+        map.put("nextStudentId", nextStudentId);
+        keReplyMapper.updateReplyReadable(map);
+    }
+
+    public List<Integer> teacherMessageList(Integer nextStudentId, Integer teacherId) {
+        Map map = new HashMap<>();
+        map.put("nextStudentId", nextStudentId);
+        map.put("teacherId", teacherId);
+        return keReplyMapper.teacherMessageList(map);
+    }
+
+    public KeSubject getSubjectById(Integer id) {
+        return keSubjectMapper.selectByPrimaryKey(id);
+    }
+
+    public KeReply getReplyBySubjectId(Integer subjectId) {
+        return keReplyMapper.getReplyBySubjectId(subjectId);
+
+    }
+
+    public void updateProgress(KeUser student, Integer credit, Integer test, Integer video) {
+        KeProgress progress = getSignin(student.getId(), TimeUtils.makeYMDStringFormat(new Date()));
+        if (progress == null) {
+            progress = new KeProgress();
+            progress.setDate(new Date());
+            progress.setCreateTime(new Date());
+            progress.setCredit(credit);
+            progress.setVideo(video);
+            progress.setTest(test);
+            progress.setStudentId(student.getId());
+            keProgressMapper.insert(progress);
+        } else {
+            progress.setCredit(progress.getCredit() + credit);
+            progress.setTest(progress.getTest() + test);
+            progress.setVideo(progress.getVideo() + video);
+            keProgressMapper.updateByPrimaryKey(progress);
+        }
+        if(credit != null || credit != 0){
+            student.setCredit(student.getCredit() + credit);
+            updateUser(student);
+        }
+    }
+
+    public KeProgress getSignin(Integer studentId, String date) {
+        Map map = new HashMap<>();
+        map.put("studentId", studentId);
+        map.put("date", date);
+        return keProgressMapper.findProgress(map);
     }
 }

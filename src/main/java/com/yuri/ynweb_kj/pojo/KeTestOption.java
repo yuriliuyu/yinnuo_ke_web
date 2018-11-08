@@ -9,20 +9,16 @@ import java.util.Date;
 @Data
 @ToString
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class KeSubject {
+public class KeTestOption {
     private Integer id;
 
-    private String content;
+    private String option;
 
-    private Integer teacherId;
+    private Integer testId;
 
-    private String teacherName;
+    private Integer isAnswer;
 
-    private Integer studentId;
-
-    private String studentName;
-
-    private Integer isRead;
+    private Integer orderId;
 
     private Date createTime;
 

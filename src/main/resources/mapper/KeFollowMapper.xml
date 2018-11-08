@@ -36,10 +36,10 @@
     from ke_follow
   </select>
   <select id="teacherFollow" resultMap="BaseResultMap" >
-    select student_id from ke_follow where teacher_id=#{teacherId}
+    select student_id from ke_follow where teacher_id=#{teacherId} order by student_id
   </select>
   <select id="studentFollow" resultMap="BaseResultMap" >
-    select teacher_id from ke_follow where student_id=#{studentId}
+    select teacher_id from ke_follow where student_id=#{studentId} order by teacher_id
   </select>
   <select id="findFollow" resultMap="BaseResultMap" >
     select id from ke_follow where student_id=#{studentId} and teacher_id=#{teacherId}

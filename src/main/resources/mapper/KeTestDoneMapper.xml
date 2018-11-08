@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuri.ynweb_kj.dao.KeTestDoneMapper" >
+  <resultMap id="BaseResultMap" type="com.yuri.ynweb_kj.pojo.KeTestDone" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="test_id" property="testId" jdbcType="INTEGER" />
+    <result column="qustion" property="qustion" jdbcType="VARCHAR" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="is_right" property="isRight" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ke_test_done
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeTestDone" >
+    insert into ke_test_done (id, test_id, qustion,
+      student_id, is_right, create_time,
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{testId,jdbcType=INTEGER}, #{qustion,jdbcType=VARCHAR},
+      #{studentId,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeTestDone" >
+    update ke_test_done
+    set test_id = #{testId,jdbcType=INTEGER},
+      qustion = #{qustion,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=INTEGER},
+      is_right = #{isRight,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, test_id, qustion, student_id, is_right, create_time, update_time
+    from ke_test_done
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, test_id, qustion, student_id, is_right, create_time, update_time
+    from ke_test_done
+  </select>
+  <select id="getTestDoneByStudentAndTestId" resultMap="BaseResultMap">
+    select id from ke_test_wrong where student_id=#{studentId} and test_id=#{testId}
+  </select>
+  <select id="getWrongTestList" resultMap="BaseResultMap">
+    select qustion,id from ke_test_wrong where student_id=#{studentId} and is_right=-1
+  </select>
+</mapper>
