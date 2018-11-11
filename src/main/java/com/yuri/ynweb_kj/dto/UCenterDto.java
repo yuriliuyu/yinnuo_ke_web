@@ -33,7 +33,7 @@ public class UCenterDto {
 
     private Integer loginTotal;
 
-    private String process;
+    private Integer process;
 
     private List<String> signin;
 

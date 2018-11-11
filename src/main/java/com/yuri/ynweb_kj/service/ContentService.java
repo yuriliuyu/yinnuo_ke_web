@@ -141,4 +141,31 @@ public class ContentService {
         map.put("studentId", studentId);
         return keTestDoneMapper.getTestDoneByStudentAndTestId(map);
     }
+
+    public List<Integer> getTestIdsByContentId(Integer contentId) {
+        return keTestMapper.getTestIdsByContentId(contentId);
+    }
+
+    public List<Integer> getDoneTestIdsByContentId(Integer contentId, Integer studentId) {
+        Map map = new HashMap<>();
+        map.put("contentId", contentId);
+        map.put("studentId", studentId);
+        return keTestDoneMapper.getDoneTestIdsByContentId(map);
+    }
+
+    public Integer getAllTestCount() {
+        return keTestMapper.getAllTestCount();
+    }
+
+    public List<KeTestDone> getTestDoneByStudentId(Integer studentId) {
+        return keTestDoneMapper.getTestDoneByStudentId(studentId);
+    }
+
+    public Integer getContentCount(Integer level) {
+        return keContentMapper.getAllCount(level);
+    }
+
+    public Integer getContentDoneCountByStudentId(Integer studentId) {
+        return keContentDoneMapper.getContentDoneCountByStudentId(studentId);
+    }
 }

@@ -21,15 +21,13 @@ public class KeContent {
 
     private Integer type;
 
-    private Integer shape;
-
     private Integer orderId;
+
+    private String url;
 
     private Date createTime;
 
     private Date updateTime;
-
-    private String url;
 
     private String description;
 

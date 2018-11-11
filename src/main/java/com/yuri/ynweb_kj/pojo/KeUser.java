@@ -37,15 +37,5 @@ public class KeUser {
 
     private Date lastLogin;
 
-    private Integer process;
-
-    private Integer exerciseDone;
-
-    private Integer exerciseRight;
-
-    private Integer exerciseWrong;
-
-    private Integer exerciseAll;
-
     private Integer message;
 }

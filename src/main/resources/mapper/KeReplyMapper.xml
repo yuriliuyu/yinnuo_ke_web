@@ -46,17 +46,17 @@
   <select id="getBySubjectId" resultMap="BaseResultMap" >
     select id, reply from ke_reply where subject_id=#{subjectId}
   </select>
-  <select id="updateReplyReadable">
-    update ke_reply set is_read = 1 where student_id=#{nextStudentId} and teacher_id=#{teacherId}
+  <select id="updateReplyIsRead">
+    update ke_reply set is_read = #{isRead} where student_id=#{studentId} and teacher_id=#{teacherId}
   </select>
   <select id="teacherMessageList" resultType="java.lang.Integer">
-    select subject_id from ke_reply where student_id=#{nextStudentId} and teacher_id=#{teacherId} and is_read=0
+    select subject_id from ke_reply where student_id=#{studentId} and teacher_id=#{teacherId} and is_read=#{isRead}
   </select>
   <select id="getReplyBySubjectId" resultMap="BaseResultMap" >
     select id from ke_reply where subject_id=#{subjectId}
   </select>
   <select id="getByTeacherIdAndStudentId" resultType="java.lang.Integer">
     select count(id) from ke_reply
-    where student_id=#{studentId} and teacher_id=#{teacherId} and is_read=#{unread}
+    where student_id=#{studentId} and teacher_id=#{teacherId} and is_read=#{isRead}
   </select>
 </mapper>

@@ -19,4 +19,5 @@ public interface KeContentDoneMapper {
 
     KeContentDone getContentDone(Map map);
 
+    Integer getContentDoneCountByStudentId(Integer studentId);
 }

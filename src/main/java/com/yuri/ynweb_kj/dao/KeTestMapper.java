@@ -15,4 +15,8 @@ public interface KeTestMapper {
     int updateByPrimaryKey(KeTest record);
 
     List<KeTest> getTestListByContentId(Integer contentId);
+
+    List<Integer> getTestIdsByContentId(Integer contentId);
+
+    Integer getAllTestCount();
 }

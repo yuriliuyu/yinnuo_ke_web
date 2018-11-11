@@ -90,7 +90,7 @@ public class ContentController {
         //查看某个分类下已读内容
         Integer orderId = contentService.getMaxReadOrderId(studentId, category);
         Integer nextReadableOrderId = 0;
-        if(orderId != null){
+        if (orderId != null) {
             nextReadableOrderId = contentService.getNextReadableOrderId(orderId, category);
         }
         //查找一级目录
@@ -117,19 +117,22 @@ public class ContentController {
                     l3dto.setTitle(l3contentList.get(k).getTitle());
                     l3dto.setType(l3contentList.get(k).getType());
                     l3dto.setUrl(l3contentList.get(k).getUrl());
-                    l3dto.setContent(l3contentList.get(k).getContent());
                     //增加可读标识
-                    if(orderId == null){
-                        if(k==0){
+                    if (orderId == null) {
+                        if (k == 0) {
                             l3dto.setIsReadable(EnumIsReadable.READABLE.value());
-                        }else{
+                        } else {
                             l3dto.setIsReadable(EnumIsReadable.UNREADABLE.value());
                         }
-                    }else{
-                        if(l3contentList.get(k).getOrderId() <= nextReadableOrderId){
+                    } else {
+                        if(nextReadableOrderId == null){
                             l3dto.setIsReadable(EnumIsReadable.READABLE.value());
                         }else{
-                            l3dto.setIsReadable(EnumIsReadable.UNREADABLE.value());
+                            if (l3contentList.get(k).getOrderId() <= nextReadableOrderId) {
+                                l3dto.setIsReadable(EnumIsReadable.READABLE.value());
+                            } else {
+                                l3dto.setIsReadable(EnumIsReadable.UNREADABLE.value());
+                            }
                         }
                     }
                     l3DtoList.add(l3dto);
@@ -246,25 +249,25 @@ public class ContentController {
      * @return
      */
     @RequestMapping(value = "/front/content/case_step5", method = RequestMethod.POST)
-    public BaseJsonResultVO casesStep5(@RequestParam(value = "characterid") Integer characterId,@RequestParam(value = "studentid") Integer studentId) {
+    public BaseJsonResultVO casesStep5(@RequestParam(value = "characterid") Integer characterId, @RequestParam(value = "studentid") Integer studentId) {
         KeCharacter character = contentService.getCharacterById(characterId);
         KeCharacter result = new KeCharacter();
         result.setSummary(character.getSummary());
         //先查看内容已读表里是否有该记录
         KeContentDone keContentDone = contentService.getContentDone(character.getContentId(), studentId);
-        if(keContentDone == null){
+        if (keContentDone == null) {
             //再查看主人公已读表里是否有该记录
             KeCharacterDone keCharacterDone = contentService.getCharacterDone(characterId, studentId);
-            if(keCharacterDone == null){
+            if (keCharacterDone == null) {
                 contentService.insertCharacterDone(studentId, characterId, character.getContentId());
             }
-            //查看该内容下所有主人公全部浏览完毕
+            //查看该内容下所有主人公是否全部浏览完毕
             List<Integer> characterIdList = contentService.getCharacterIdsByContentId(character.getContentId());
             List<Integer> doneCharacterIdList = contentService.getDoneCharacterIdsByContentId(character.getContentId(), studentId);
             Collections.sort(characterIdList);
             Collections.sort(doneCharacterIdList);
             //所有主人公全部浏览完毕，插入contentdone
-            if(characterIdList.equals(doneCharacterIdList)){
+            if (characterIdList.equals(doneCharacterIdList)) {
                 KeContent kecontent = contentService.getContentById(character.getContentId());
                 contentService.insertContentDone(kecontent, studentId);
             }
@@ -294,6 +297,7 @@ public class ContentController {
             dto.setOptionList(optionList);
             dto.setPicUrl(test.getPicUrl());
             dto.setQuestion(test.getQuestion());
+            resultList.add(dto);
         }
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setData(resultList);
@@ -314,27 +318,39 @@ public class ContentController {
         KeTestOption option = contentService.getTestOptionById(testOptionId);
         KeTest keTest = contentService.getTestById(option.getTestId());
         KeUser student = userService.findUserById(studentId);
-        KeTestDone keTestDone = contentService.getTestDoneByStudentAndTestId(studentId, option.getTestId());
-        if (keTestDone == null) {
-            if (option.getIsAnswer() == EnumIsAnswer.YES.value()) {
-                student.setExerciseRight(student.getExerciseRight() + 1);
-                student.setExerciseDone(student.getExerciseDone() + 1);
-                userService.updateUser(student);
-                userService.updateProgress(student, EnumCreditType.TEST.value(), 1, 0);
-            } else {
-                student.setExerciseDone(student.getExerciseDone() + 1);
-                student.setExerciseWrong(student.getExerciseWrong() + 1);
-                userService.updateProgress(student, 0, 1, 0);
-            }
-            keTestDone = new KeTestDone();
-            keTestDone.setCreateTime(new Date());
-            keTestDone.setTestId(option.getTestId());
-            keTestDone.setStudentId(studentId);
-            keTestDone.setQustion(keTest.getQuestion());
-            keTestDone.setIsRight(option.getIsAnswer());
-            contentService.insertTestWrong(keTestDone);
-        }
 
+        //先查看内容已读表里是否有该记录
+        KeContentDone keContentDone = contentService.getContentDone(keTest.getContentId(), studentId);
+        if (keContentDone == null) {
+            //再查看随堂测试已读表里是否有该记录
+            KeTestDone keTestDone = contentService.getTestDoneByStudentAndTestId(studentId, option.getTestId());
+            if (keTestDone == null) {
+                if (option.getIsAnswer() == EnumIsAnswer.YES.value()) {
+                    userService.updateUser(student);
+                    userService.updateProgress(student, EnumCreditType.TEST.value(), 1, 0);
+                } else {
+                    userService.updateProgress(student, 0, 1, 0);
+                }
+                keTestDone = new KeTestDone();
+                keTestDone.setCreateTime(new Date());
+                keTestDone.setTestId(option.getTestId());
+                keTestDone.setContentId(keTest.getContentId());
+                keTestDone.setStudentId(studentId);
+                keTestDone.setQustion(keTest.getQuestion());
+                keTestDone.setIsRight(option.getIsAnswer());
+                contentService.insertTestWrong(keTestDone);
+            }
+            //查看该内容下所有随堂测试是否全部浏览完毕
+            List<Integer> testIdList = contentService.getTestIdsByContentId(keTest.getContentId());
+            List<Integer> doneTestIdList = contentService.getDoneTestIdsByContentId(keTest.getContentId(), studentId);
+            Collections.sort(testIdList);
+            Collections.sort(doneTestIdList);
+            //所有测试全部回答完毕，插入contentdone
+            if (testIdList.equals(doneTestIdList)) {
+                KeContent kecontent = contentService.getContentById(keTest.getContentId());
+                contentService.insertContentDone(kecontent, studentId);
+            }
+        }
         Integer isAnswer = option.getIsAnswer();
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setData(isAnswer);
@@ -367,15 +383,40 @@ public class ContentController {
      * @return
      */
     @RequestMapping(value = "/front/content/videofinish", method = RequestMethod.POST)
-    public BaseJsonResultVO videoFinish(@RequestParam(value = "contentId") Integer contentId, @RequestParam(value = "studentid") Integer studentId) {
+    public BaseJsonResultVO videoFinish(@RequestParam(value = "contentid") Integer contentId, @RequestParam(value = "studentid") Integer studentId) {
         KeContent content = contentService.getContentById(contentId);
         KeUser student = userService.findUserById(studentId);
-       // contentService.updateReadableContent(studentId, content);
-        userService.updateProgress(student, EnumCreditType.VIDEO.value(), 0, 1);
+        //先查看内容已读表里是否有该记录
+        KeContentDone keContentDone = contentService.getContentDone(contentId, studentId);
+        if (keContentDone == null) {
+            userService.updateProgress(student, EnumCreditType.VIDEO.value(), 0, 1);
+            contentService.insertContentDone(content, studentId);
+        }
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
     }
 
+    /**
+     * 获取图文混排内容
+     *
+     * @param contentId 视频id
+     * @param studentId 学生id
+     * @return
+     */
+    @RequestMapping(value = "/front/content/mixcontent", method = RequestMethod.POST)
+    public BaseJsonResultVO mixContent(@RequestParam(value = "contentid") Integer contentId, @RequestParam(value = "studentid") Integer studentId) {
+        KeContent content = contentService.getContentById(contentId);
+        KeUser student = userService.findUserById(studentId);
+        //先查看内容已读表里是否有该记录
+        KeContentDone keContentDone = contentService.getContentDone(contentId, studentId);
+        if (keContentDone == null) {
+            contentService.insertContentDone(content, studentId);
+        }
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        return vo;
+    }
 }

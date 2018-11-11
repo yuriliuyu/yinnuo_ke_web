@@ -44,7 +44,7 @@
     from ke_progress
   </select>
   <select id="findProgressList" resultMap="BaseResultMap">
-    select video, subject, credit, date
+    select video, test, credit, date
     from ke_progress where student_id=#{studentId}
     <if test="type != null and type == '1'.toString()" >
       and to_days(`date`) = to_days(now())
@@ -58,7 +58,7 @@
     order by create_time
   </select>
   <select id="findProgress" resultMap="BaseResultMap" >
-    select id, student_id, date, video, test, signin, create_time, update_time
+    select id, student_id, date, video, test, credit, create_time, update_time
     from ke_progress
     where student_id=#{studentId} and `date`=#{date}
   </select>

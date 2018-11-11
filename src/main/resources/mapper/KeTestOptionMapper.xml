@@ -15,7 +15,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeTestOption" >
-    insert into ke_test_option (id, option, test_id, 
+    insert into ke_test_option (id, `option`, test_id,
       is_answer, order_id, create_time, 
       update_time)
     values (#{id,jdbcType=INTEGER}, #{option,jdbcType=VARCHAR}, #{testId,jdbcType=INTEGER}, 
@@ -24,7 +24,7 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeTestOption" >
     update ke_test_option
-    set option = #{option,jdbcType=VARCHAR},
+    set `option` = #{option,jdbcType=VARCHAR},
       test_id = #{testId,jdbcType=INTEGER},
       is_answer = #{isAnswer,jdbcType=INTEGER},
       order_id = #{orderId,jdbcType=INTEGER},
@@ -33,18 +33,18 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, option, test_id, is_answer, order_id, create_time, update_time
+    select id, `option`, test_id, is_answer, order_id, create_time, update_time
     from ke_test_option
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, option, test_id, is_answer, order_id, create_time, update_time
+    select id, `option`, test_id, is_answer, order_id, create_time, update_time
     from ke_test_option
   </select>
   <select id="getOptionListByTestId" resultMap="BaseResultMap" >
-    select id, option
+    select id, `option`
     from ke_test_option
     where test_id=#{testId}
-    order by order_id desc
+    order by order_id
   </select>
 </mapper>

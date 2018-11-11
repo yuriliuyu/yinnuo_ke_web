@@ -31,6 +31,8 @@ public class UserService {
     KeSubjectMapper keSubjectMapper;
     @Autowired
     KeReplyMapper keReplyMapper;
+    @Autowired
+    KeTestMapper keTestMapper;
 
     public KeUser findUser(String userName, String password) {
         Map map = new HashMap<>();
@@ -160,10 +162,10 @@ public class UserService {
         return keSubjectMapper.getNextUnreadSubjectTeacherId();
     }
 
-    public List<KeSubject> studentMessageList(Integer studentId, Integer nextTeacherId, Integer isRead) {
+    public List<KeSubject> studentMessageList(Integer studentId, Integer teacherId, Integer isRead) {
         Map map = new HashMap<>();
         map.put("studentId", studentId);
-        map.put("nextTeacherId", nextTeacherId);
+        map.put("teacherId", teacherId);
         map.put("isRead", isRead);
         return keSubjectMapper.studentMessageList(map);
     }
@@ -186,17 +188,19 @@ public class UserService {
         return keSubjectMapper.getNextSubjectTeacherId(map);
     }
 
-    public void updateReplyReadable(Integer teacherId, Integer nextStudentId) {
+    public void updateReplyIsRead(Integer teacherId, Integer studentId, Integer isRead) {
         Map map = new HashMap<>();
         map.put("teacherId", teacherId);
-        map.put("nextStudentId", nextStudentId);
-        keReplyMapper.updateReplyReadable(map);
+        map.put("studentId", studentId);
+        map.put("isRead", isRead);
+        keReplyMapper.updateReplyIsRead(map);
     }
 
-    public List<Integer> teacherMessageList(Integer nextStudentId, Integer teacherId) {
+    public List<Integer> teacherMessageList(Integer studentId, Integer teacherId, Integer isRead) {
         Map map = new HashMap<>();
-        map.put("nextStudentId", nextStudentId);
+        map.put("studentId", studentId);
         map.put("teacherId", teacherId);
+        map.put("isRead", isRead);
         return keReplyMapper.teacherMessageList(map);
     }
 

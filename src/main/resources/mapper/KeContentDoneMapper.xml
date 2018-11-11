@@ -37,8 +37,12 @@
   </select>
   <select id="getMaxReadOrderId" resultType="java.lang.Integer">
     select order_id from ke_content_done where student_id=#{studentId} and category=#{category}
+    order by order_id desc limit 1
   </select>
   <select id="getContentDone" resultMap="BaseResultMap" >
     select id from ke_content_done where student_id=#{studentId} and content_id=#{contentId}
+  </select>
+  <select id="getContentDoneCountByStudentId" resultType="java.lang.Integer">
+    select count(1) from ke_content_done where student_id=#{studentId}
   </select>
 </mapper>

@@ -8,11 +8,10 @@
     <result column="category" property="category" jdbcType="INTEGER" />
     <result column="level" property="level" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="shape" property="shape" jdbcType="INTEGER" />
     <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="LONGVARCHAR" />
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
   </resultMap>
@@ -23,14 +22,14 @@
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeContent" >
     insert into ke_content (id, pid, title,
       category, level, type,
-      shape, order_id, create_time,
-      update_time, url, description,
-      content)
+      order_id, url, create_time,
+      update_time, description, content
+      )
     values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
       #{category,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
-      #{shape,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP}, #{url,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR},
-      #{content,jdbcType=LONGVARCHAR})
+      #{orderId,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeContent" >
     update ke_content
@@ -39,28 +38,27 @@
       category = #{category,jdbcType=INTEGER},
       level = #{level,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
-      shape = #{shape,jdbcType=INTEGER},
       order_id = #{orderId,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      url = #{url,jdbcType=VARCHAR},
       description = #{description,jdbcType=LONGVARCHAR},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, pid, title, category, level, type, shape, order_id, create_time, update_time,
-    url, description, content
+    select id, pid, title, category, level, type, order_id, url, create_time, update_time,
+    description, content
     from ke_content
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, pid, title, category, level, type, shape, order_id, create_time, update_time,
-    url, description, content
+    select id, pid, title, category, level, type, order_id, url, create_time, update_time,
+    description, content
     from ke_content
   </select>
   <sql id="Base_Column_List" >
-    id, pid, title, level, type, shape, order_id, create_time, update_time, category,
+    id, pid, title, level, type, order_id, create_time, update_time, category,
     description, url, content
   </sql>
   <select id="getContentListByCategoryAndPid" resultMap="BaseResultMap" >
@@ -80,6 +78,9 @@
     select count(1), category from ke_content where pid=-1 group by category order by category
   </select>
   <select id="getNextReadableOrderId" resultType="java.lang.Integer">
-    select order_id from ke_content where category=#{category} order_id > #{orderId} limit 1
+    select order_id from ke_content where category=#{category} and level=3 and order_id > #{orderId} limit 1
+  </select>
+  <select id="getAllCount" resultType="java.lang.Integer">
+    select count(1) from ke_content where level=#{level}
   </select>
 </mapper>

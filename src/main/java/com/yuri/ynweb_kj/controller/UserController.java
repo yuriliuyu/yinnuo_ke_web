@@ -5,6 +5,7 @@ import com.yuri.ynweb_kj.dto.SubjectDto;
 import com.yuri.ynweb_kj.dto.UCenterDto;
 import com.yuri.ynweb_kj.dto.UserSimpleDto;
 import com.yuri.ynweb_kj.pojo.*;
+import com.yuri.ynweb_kj.service.ContentService;
 import com.yuri.ynweb_kj.service.UserService;
 import com.yuri.ynweb_kj.utils.*;
 import com.yuri.ynweb_kj.vo.BaseJsonResultVO;
@@ -27,6 +28,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ContentService contentService;
 
     /**
      * 登录接口
@@ -45,12 +48,11 @@ public class UserController {
                 userService.updateUser(user);
             }
             BaseJsonResultVO vo = new BaseJsonResultVO();
+            UserSimpleDto resultDto = new UserSimpleDto();
+            resultDto.setId(user.getId());
+            resultDto.setName(user.getName());
             vo.setCode(EnumResCode.SUCCESSFUL.value());
-            user.setPassword(null);
-            user.setCredit(null);
-            user.setLastLogin(null);
-            user.setSigninNum(null);
-            vo.setData(user);
+            vo.setData(resultDto);
             vo.setMessage("ok");
             return vo;
         } else {
@@ -80,7 +82,7 @@ public class UserController {
     /**
      * 学生关注老师
      *
-     * @param studentId
+     * @param studentId 学生id
      * @return
      */
     @RequestMapping(value = "/front/student/tofollow", method = RequestMethod.POST)
@@ -170,7 +172,7 @@ public class UserController {
         KeUser student = userService.findUserById(studentId);
         if (student != null) {
             KeProgress progress = userService.getSignin(studentId, TimeUtils.makeYMDStringFormat(new Date()));
-            if(progress != null){
+            if (progress != null) {
                 vo.setCode(EnumResCode.SERVER_ERROR.value());
                 vo.setMessage("重复签到");
                 return vo;
@@ -214,8 +216,9 @@ public class UserController {
             dto.setLastLogin(TimeUtils.makeYMDHMSStringFormat(student.getLastLogin()));
             dto.setMajor(student.getMajor());
             dto.setSchool(student.getSchool());
-            BigDecimal decimalProcess = new BigDecimal(student.getProcess());
-            dto.setProcess(decimalProcess.divide(new BigDecimal(10)).toString());
+            Integer contentDoneCount = contentService.getContentDoneCountByStudentId(studentId);
+            Integer contentCount = contentService.getContentCount(EnumLevel.LEVEL3.value());
+            dto.setProcess((int) Math.floor(contentDoneCount * 100 / contentCount));
             dto.setPortrait(student.getPortrait());
             dto.setName(student.getName());
             dto.setSigninNum(student.getSigninNum());
@@ -240,8 +243,8 @@ public class UserController {
      * @param type      1-今日，2-近7日，3-近30日，4-全部
      * @return
      */
-    @RequestMapping(value = "/front/student/progess_stat", method = RequestMethod.POST)
-    public BaseJsonResultVO progessStat(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "type") Integer type) {
+    @RequestMapping(value = "/front/student/progress_stat", method = RequestMethod.POST)
+    public BaseJsonResultVO progressStat(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "type") Integer type) {
         List<KeProgress> list = userService.findProgressList(studentId, type);
         List<String> dateList = new LinkedList<>();
         ProgressDto result = new ProgressDto();
@@ -262,19 +265,30 @@ public class UserController {
      * 学习进度个人情况
      *
      * @param studentId 学生id
-     * @return
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/student/progess_user", method = RequestMethod.POST)
     public BaseJsonResultVO progessUser(@RequestParam(value = "studentid") Integer studentId) {
         KeUser student = userService.findUserById(studentId);
+        Integer testCount = contentService.getAllTestCount();
+        List<KeTestDone> keTestDoneList = contentService.getTestDoneByStudentId(studentId);
+        Integer right = 0;
+        Integer wrong = 0;
+        for (KeTestDone keTestDone : keTestDoneList) {
+            if (EnumIsAnswer.YES.value() == keTestDone.getIsRight()) {
+                right += 1;
+            } else {
+                wrong += 1;
+            }
+        }
         ProgressDto result = new ProgressDto();
-        result.setExerciseAll(student.getExerciseAll());
-        result.setExerciseDone(student.getExerciseDone());
-        result.setExerciseRight(student.getExerciseRight());
-        result.setExerciseWill(student.getExerciseAll() - student.getExerciseDone());
-        result.setExerciseWrong(student.getExerciseDone() - student.getExerciseRight());
-        result.setDoneRate(student.getExerciseAll() == 0 ? 0 : (int) Math.floor(student.getExerciseDone() * 100 / student.getExerciseAll()));
-        result.setRightRate(student.getExerciseDone() == 0 ? 0 : (int) Math.floor(student.getExerciseRight() * 100 / student.getExerciseDone()));
+        result.setExerciseAll(testCount);
+        result.setExerciseDone(keTestDoneList.size());
+        result.setExerciseRight(right);
+        result.setExerciseWill(testCount - keTestDoneList.size());
+        result.setExerciseWrong(wrong);
+        result.setDoneRate(result.getExerciseAll() == 0 ? 0 : (int) Math.floor(result.getExerciseDone() * 100 / result.getExerciseAll()));
+        result.setRightRate(result.getExerciseDone() == 0 ? 0 : (int) Math.floor(result.getExerciseRight() * 100 / result.getExerciseDone()));
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setData(result);
@@ -375,11 +389,11 @@ public class UserController {
      *
      * @param teacherId 老师id
      * @param studentId 学生id
-     * @return
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/teacher/message/list", method = RequestMethod.POST)
     public BaseJsonResultVO teacherMessageList(@RequestParam(value = "teacherid") Integer teacherId, @RequestParam(value = "studentid") Integer studentId) {
-        List<Integer> subjectIdList = userService.teacherMessageList(studentId, teacherId);
+        List<Integer> subjectIdList = userService.teacherMessageList(studentId, teacherId, EnumIsRead.UNREAD.value());
         List<SubjectDto> resultList = new LinkedList<>();
         for (Integer id : subjectIdList) {
             KeSubject subject = userService.getSubjectById(id);
@@ -394,7 +408,7 @@ public class UserController {
             dto.setReplyId(reply == null ? null : reply.getId());
             resultList.add(dto);
         }
-        userService.updateReplyReadable(teacherId, studentId);
+        userService.updateReplyIsRead(teacherId, studentId, EnumIsRead.READED.value());
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
@@ -408,7 +422,7 @@ public class UserController {
      * @param studentId 学生id
      * @param teacherId 老师id
      * @param type      1-上一个，2-下一个
-     * @return
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/student/subject/list", method = RequestMethod.POST)
     public BaseJsonResultVO studentSubjectList(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teacherid", required = false) Integer teacherId,
@@ -445,7 +459,7 @@ public class UserController {
      *
      * @param studentId 学生id
      * @param teacherId 老师id
-     * @return
+     * @return BaseJsonResultVO
      */
     @RequestMapping(value = "/front/teacher/subject/list", method = RequestMethod.POST)
     public BaseJsonResultVO teacherSubjectList(@RequestParam(value = "studentid") Integer studentId, @RequestParam(value = "teacherid") Integer teacherId) {

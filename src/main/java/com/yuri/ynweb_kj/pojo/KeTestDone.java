@@ -22,4 +22,6 @@ public class KeTestDone {
     private Date createTime;
 
     private Date updateTime;
+
+    private Integer contentId;
 }

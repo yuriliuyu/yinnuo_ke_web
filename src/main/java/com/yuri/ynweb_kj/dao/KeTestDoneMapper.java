@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface KeTestDoneMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(KeTestDone record);
@@ -19,4 +20,8 @@ public interface KeTestDoneMapper {
     List<KeTestDone> getWrongTestList(Integer studentId);
 
     KeTestDone getTestDoneByStudentAndTestId(Map map);
+
+    List<Integer> getDoneTestIdsByContentId(Map map);
+
+    List<KeTestDone> getTestDoneByStudentId(Integer studentId);
 }

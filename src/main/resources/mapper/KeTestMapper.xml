@@ -45,6 +45,13 @@
     select id, question, pic_url
     from ke_test
     where content_id=#{contentId}
-    order by order_id desc
+    order by order_id
+  </select>
+  <select id="getTestIdsByContentId" resultType="java.lang.Integer">
+    select id from ke_test
+    where content_id=#{contentId}
+  </select>
+  <select id="getAllTestCount" resultType="java.lang.Integer">
+    select count(1) from ke_test;
   </select>
 </mapper>

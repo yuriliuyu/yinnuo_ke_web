@@ -53,7 +53,7 @@
     select teacher_id from ke_subject where is_read = 0 order by create_time limit 1
   </select>
   <select id="studentMessageList" resultMap="BaseResultMap">
-    select id, content, teacher_name,teacher_id from ke_subject where student_id=#{studentId} and teacher_id=#{nextTeacherId}
+    select id, content, teacher_name,teacher_id from ke_subject where student_id=#{studentId} and teacher_id=#{teacherId}
     <if test="isRead !=null">
       and is_read =#{isRead}
     </if>

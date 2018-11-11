@@ -18,7 +18,7 @@ public interface KeReplyMapper {
 
     KeReply getBySubjectId(Integer subjectId);
 
-    void updateReplyReadable(Map map);
+    void updateReplyIsRead(Map map);
 
     List<Integer> teacherMessageList(Map map);
 

@@ -9,6 +9,7 @@
     <result column="is_right" property="isRight" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ke_test_done
@@ -17,10 +18,10 @@
   <insert id="insert" parameterType="com.yuri.ynweb_kj.pojo.KeTestDone" >
     insert into ke_test_done (id, test_id, qustion,
       student_id, is_right, create_time,
-      update_time)
+      update_time, content_id)
     values (#{id,jdbcType=INTEGER}, #{testId,jdbcType=INTEGER}, #{qustion,jdbcType=VARCHAR},
       #{studentId,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{updateTime,jdbcType=TIMESTAMP}, #{contentId,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeTestDone" >
     update ke_test_done
@@ -29,22 +30,30 @@
       student_id = #{studentId,jdbcType=INTEGER},
       is_right = #{isRight,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      content_id = #{contentId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, test_id, qustion, student_id, is_right, create_time, update_time
+    select id, test_id, qustion, student_id, is_right, create_time, update_time, content_id
     from ke_test_done
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, test_id, qustion, student_id, is_right, create_time, update_time
+    select id, test_id, qustion, student_id, is_right, create_time, update_time, content_id
     from ke_test_done
   </select>
   <select id="getTestDoneByStudentAndTestId" resultMap="BaseResultMap">
-    select id from ke_test_wrong where student_id=#{studentId} and test_id=#{testId}
+    select id from ke_test_done where student_id=#{studentId} and test_id=#{testId}
   </select>
   <select id="getWrongTestList" resultMap="BaseResultMap">
-    select qustion,id from ke_test_wrong where student_id=#{studentId} and is_right=-1
+    select qustion,id from ke_test_done where student_id=#{studentId} and is_right=-1
+  </select>
+  <select id="getDoneTestIdsByContentId" resultType="java.lang.Integer">
+    select test_id from ke_test_done
+    where content_id=#{contentId} and student_id=#{studentId}
+  </select>
+  <select id="getTestDoneByStudentId" resultMap="BaseResultMap">
+    select id, is_right from ke_test_done where student_id=#{studentId}
   </select>
 </mapper>

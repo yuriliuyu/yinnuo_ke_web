@@ -12,6 +12,5 @@ public class TrainingL3Dto {
     private String title;
     private Integer type;
     private String url;
-    private String content;
-    private Integer isReadable; // 1-是，2-否
+    private Integer isReadable;
 }
