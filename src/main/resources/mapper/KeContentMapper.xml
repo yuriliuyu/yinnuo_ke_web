@@ -83,4 +83,16 @@
   <select id="getAllCount" resultType="java.lang.Integer">
     select count(1) from ke_content where level=#{level}
   </select>
+
+  <select id="getContentListBackend" resultMap="BaseResultMap" >
+    select
+    id, pid, title, level, type, order_id,category,
+    description, url, content
+    from ke_content
+    where category=#{category} and
+    <if test="pid != null">
+      pid = #{pid} and
+    </if>
+    level=#{level} order by order_id
+  </select>
 </mapper>

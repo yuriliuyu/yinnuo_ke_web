@@ -51,7 +51,7 @@
   </select>
   <select id="getDoneTestIdsByContentId" resultType="java.lang.Integer">
     select test_id from ke_test_done
-    where content_id=#{contentId} and student_id=#{studentId}
+    where student_id=#{studentId} and content_id=#{contentId}
   </select>
   <select id="getTestDoneByStudentId" resultMap="BaseResultMap">
     select id, is_right from ke_test_done where student_id=#{studentId}

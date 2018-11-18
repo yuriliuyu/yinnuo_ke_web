@@ -1,8 +1,8 @@
 server:
   port: 8081
 web:
-  upload-path: /usr/local/uploadFile/
-  server-url: http://localhost:8080/
+  upload-path: /usr/local/var/www
+  server-url: http://localhost
 spring:
   mvc:
     static-path-pattern: /**

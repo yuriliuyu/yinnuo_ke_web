@@ -33,6 +33,10 @@ public class UserService {
     KeReplyMapper keReplyMapper;
     @Autowired
     KeTestMapper keTestMapper;
+    @Autowired
+    KeSchoolMapper keSchoolMapper;
+    @Autowired
+    KeUserMapper keUserMapper;
 
     public KeUser findUser(String userName, String password) {
         Map map = new HashMap<>();
@@ -241,5 +245,13 @@ public class UserService {
         map.put("studentId", studentId);
         map.put("date", date);
         return keProgressMapper.findProgress(map);
+    }
+
+    public KeSchool getSchoolById(Integer id){
+        return keSchoolMapper.selectByPrimaryKey(id);
+    }
+
+    public void insertUser(KeUser user) {
+        keUserMapper.insert(user);
     }
 }

@@ -1,8 +1,8 @@
 server:
   port: 8081
 web:
-  upload-path: /usr/local/uploadFile/
-  server-url: http://localhost:8080/
+  upload-path: /usr/local/nginx/html/upload/
+  server-url: http://www.adl66.com/upload
 spring:
   mvc:
     static-path-pattern: /**

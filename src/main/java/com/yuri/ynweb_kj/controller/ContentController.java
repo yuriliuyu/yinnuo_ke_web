@@ -144,7 +144,7 @@ public class ContentController {
             resultList.add(l1dto);
         }
         vo.setData(resultList);
-        vo.setCode(EnumResCode.SERVER_ERROR.value());
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
         return vo;
     }

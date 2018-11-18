@@ -40,6 +40,6 @@
     from ke_character_pic
   </select>
   <select id="getCharacterPicByCharaId" resultMap="BaseResultMap" >
-    select picture, is_right from ke_character_pic where character_id=#{characterId} order by order_id
+    select id, picture, is_right from ke_character_pic where character_id=#{characterId} order by order_id
   </select>
 </mapper>

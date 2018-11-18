@@ -11,4 +11,5 @@ public class UserSimpleDto {
     private Integer id;
     private String name;
     private Integer message;
+    private Integer type;
 }

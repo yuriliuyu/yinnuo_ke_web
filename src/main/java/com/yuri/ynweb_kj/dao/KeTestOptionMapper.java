@@ -15,4 +15,6 @@ public interface KeTestOptionMapper {
     int updateByPrimaryKey(KeTestOption record);
 
     List<KeTestOption> getOptionListByTestId(Integer testId);
+
+    List<KeTestOption> getTestoptionByTestId(Integer testId);
 }

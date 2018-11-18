@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +50,7 @@ public class UserController {
             UserSimpleDto resultDto = new UserSimpleDto();
             resultDto.setId(user.getId());
             resultDto.setName(user.getName());
+            resultDto.setType(user.getType());
             vo.setCode(EnumResCode.SUCCESSFUL.value());
             vo.setData(resultDto);
             vo.setMessage("ok");

@@ -36,9 +36,9 @@
   <select id="getCharacterDone" resultMap="BaseResultMap">
     select id, character_id, student_id, content_id
     from ke_character_done
-    where character_id=#{characterId} and student_id=#{studentId}
+    where student_id=#{studentId} and character_id=#{characterId}
   </select>
   <select id="getDoneCharacterIdsByContentId" resultType="java.lang.Integer">
-    select character_id from ke_character_done where content_id=#{contentId} and student_id=#{studentId}
+    select character_id from ke_character_done where student_id=#{studentId} and content_id=#{contentId}
   </select>
 </mapper>

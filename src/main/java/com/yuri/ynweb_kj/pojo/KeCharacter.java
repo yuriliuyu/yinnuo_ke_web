@@ -26,6 +26,8 @@ public class KeCharacter {
 
     private Integer contentId;
 
+    private Integer orderId;
+
     private String backgroundText;
 
     private String information;
@@ -33,5 +35,6 @@ public class KeCharacter {
     private String question;
 
     private String summary;
+
 
 }

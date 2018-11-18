@@ -7,10 +7,11 @@ import java.util.Date;
 
 public class FileUtils {
 
-    public static void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
+    public static String uploadFile(byte[] file, String filePath, String urlPath, String fileName) throws Exception {
         Date date = new Date();
         String dataForm = new SimpleDateFormat("yyyyMMdd").format(date);
         filePath = filePath + "/" + dataForm + "/";
+        urlPath = urlPath + "/" + dataForm + "/";
         File targetFile = new File(filePath);
         if (!targetFile.exists()) {
             targetFile.mkdirs();
@@ -19,6 +20,6 @@ public class FileUtils {
         out.write(file);
         out.flush();
         out.close();
+        return urlPath + fileName;
     }
-
 }
