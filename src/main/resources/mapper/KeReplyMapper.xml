@@ -59,4 +59,7 @@
     select count(id) from ke_reply
     where student_id=#{studentId} and teacher_id=#{teacherId} and is_read=#{isRead}
   </select>
+  <select id="getTeacherUnreadMessgaeNumByUserId" resultType="java.lang.Integer">
+    select count(id) from ke_reply where teacher_id=#{teacherId} and is_read =-1
+  </select>
 </mapper>

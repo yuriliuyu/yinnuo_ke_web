@@ -226,7 +226,6 @@ public class FileController {
                 }
                 keUser.setCredit(0);
                 keUser.setSigninNum(0);
-                keUser.setMessage(0);
                 keUserList.add(keUser);
             }
 

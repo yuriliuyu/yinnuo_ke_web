@@ -15,7 +15,6 @@
     <result column="signin_num" property="signinNum" jdbcType="INTEGER" />
     <result column="credit" property="credit" jdbcType="INTEGER" />
     <result column="last_login" property="lastLogin" jdbcType="TIMESTAMP" />
-    <result column="message" property="message" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ke_user
@@ -26,12 +25,12 @@
       type, school, school_id,
       gender, email, portrait,
       major, signin_num, credit,
-      last_login, message)
+      last_login)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
       #{type,jdbcType=INTEGER}, #{school,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER},
       #{gender,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR},
       #{major,jdbcType=VARCHAR}, #{signinNum,jdbcType=INTEGER}, #{credit,jdbcType=INTEGER},
-      #{lastLogin,jdbcType=TIMESTAMP}, #{message,jdbcType=INTEGER})
+      #{lastLogin,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.yuri.ynweb_kj.pojo.KeUser" >
     update ke_user
@@ -46,24 +45,23 @@
       major = #{major,jdbcType=VARCHAR},
       signin_num = #{signinNum,jdbcType=INTEGER},
       credit = #{credit,jdbcType=INTEGER},
-      last_login = #{lastLogin,jdbcType=TIMESTAMP},
-      message = #{message,jdbcType=INTEGER}
+      last_login = #{lastLogin,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, message
+    signin_num, credit, last_login
     from ke_user
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, message
+    signin_num, credit, last_login
     from ke_user
   </select>
   <sql id="Base_Column_List" >
     id, name, password, type, school, school_id, gender, email, portrait, major,
-    signin_num, credit, last_login, message
+    signin_num, credit, last_login
   </sql>
   <select id="findByNameAndPassword" resultMap="BaseResultMap">
     select
@@ -71,6 +69,6 @@
     from ke_user where name = #{name} and password = #{password}
   </select>
   <select id="findUserByName" resultMap="BaseResultMap">
-    select id,name,school,school_id from ke_user where name = #{name}
+    select id,name,school,school_id,type from ke_user where name = #{name}
   </select>
 </mapper>

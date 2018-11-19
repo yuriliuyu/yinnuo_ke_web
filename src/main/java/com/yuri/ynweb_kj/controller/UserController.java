@@ -90,7 +90,7 @@ public class UserController {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeUser teacher = userService.findUserByName(teacherName);
         KeUser student = userService.findUserById(studentId);
-        if (teacher == null) {
+        if (teacher == null || teacher.getType() != EnumUserType.TEACHER.value()) {
             vo.setCode(EnumResCode.SERVER_ERROR.value());
             vo.setMessage("系统无该名老师，不能关注");
             return vo;
@@ -145,19 +145,25 @@ public class UserController {
      */
     @RequestMapping(value = "/front/message", method = RequestMethod.POST)
     public BaseJsonResultVO message(@RequestParam(value = "userid") Integer userId) {
-        KeUser teacher = userService.findUserById(userId);
-        if (teacher != null) {
-            BaseJsonResultVO vo = new BaseJsonResultVO();
-            vo.setCode(EnumResCode.SUCCESSFUL.value());
-            vo.setData(teacher.getMessage());
-            vo.setMessage("ok");
-            return vo;
-        } else {
+        KeUser user = userService.findUserById(userId);
+        if(user == null){
             BaseJsonResultVO vo = new BaseJsonResultVO();
             vo.setCode(EnumResCode.SERVER_ERROR.value());
             vo.setMessage("用户不存在");
             return vo;
         }
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        Integer message;
+        if(user.getType() == EnumUserType.STUDENT.value()){
+            message = userService.getStudentUnreadMessgaeNumByUserId(userId);
+
+        }else{
+            message = userService.getTeacherUnreadMessgaeNumByUserId(userId);
+        }
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setData(message);
+        vo.setMessage("ok");
+        return vo;
     }
 
     /**

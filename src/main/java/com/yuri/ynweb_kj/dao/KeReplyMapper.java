@@ -25,4 +25,6 @@ public interface KeReplyMapper {
     KeReply getReplyBySubjectId(Integer subjectId);
 
     Integer getByTeacherIdAndStudentId(Map map);
+
+    Integer getTeacherUnreadMessgaeNumByUserId(Integer teacherId);
 }

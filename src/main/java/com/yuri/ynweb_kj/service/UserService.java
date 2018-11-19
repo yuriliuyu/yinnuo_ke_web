@@ -58,6 +58,7 @@ public class UserService {
             map.put("studentId", followList.get(i).getStudentId());
             map.put("teacherId", teacherId);
             map.put("isRead", EnumIsRead.UNREAD.value());
+            //TODO
             Integer unreadCount = keReplyMapper.getByTeacherIdAndStudentId(map);
             dto.setMessage(unreadCount);
             resultList.add(dto);
@@ -142,8 +143,6 @@ public class UserService {
             KeUser student = userMapper.selectByPrimaryKey(studentId);
             keSubject.setStudentName(student.getName());
             keSubjectMapper.insert(keSubject);
-            student.setMessage(student.getMessage() + 1);
-            userMapper.updateByPrimaryKey(student);
         }
     }
 
@@ -157,9 +156,6 @@ public class UserService {
         keReply.setIsRead(EnumIsRead.UNREAD.value());
         keReply.setCreateTime(new Date());
         keReplyMapper.insert(keReply);
-        KeUser teacher = userMapper.selectByPrimaryKey(keSubject.getTeacherId());
-        teacher.setMessage(teacher.getMessage() + 1);
-        userMapper.updateByPrimaryKey(teacher);
     }
 
     public Integer getNextUnreadSubjectTeacherId() {
@@ -253,5 +249,13 @@ public class UserService {
 
     public void insertUser(KeUser user) {
         keUserMapper.insert(user);
+    }
+
+    public Integer getStudentUnreadMessgaeNumByUserId(Integer studentId) {
+        return keSubjectMapper.getStudentUnreadMessgaeNumByUserId(studentId);
+    }
+
+    public Integer getTeacherUnreadMessgaeNumByUserId(Integer teacherId) {
+        return keReplyMapper.getTeacherUnreadMessgaeNumByUserId(teacherId);
     }
 }

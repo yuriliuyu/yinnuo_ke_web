@@ -36,6 +36,4 @@ public class KeUser {
     private Integer credit;
 
     private Date lastLogin;
-
-    private Integer message;
 }

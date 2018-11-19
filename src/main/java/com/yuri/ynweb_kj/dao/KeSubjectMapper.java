@@ -25,4 +25,5 @@ public interface KeSubjectMapper {
 
     Integer getNextSubjectTeacherId(Map map);
 
+    Integer getStudentUnreadMessgaeNumByUserId(Integer studentId);
 }
