@@ -13,4 +13,5 @@ public class TrainingL3Dto {
     private Integer type;
     private String url;
     private Integer isReadable;
+    private String content;
 }

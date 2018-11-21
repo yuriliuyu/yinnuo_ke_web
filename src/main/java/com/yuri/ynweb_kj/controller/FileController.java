@@ -84,6 +84,26 @@ public class FileController {
         return vo;
     }
 
+    @RequestMapping(value = "/portrait/update", method = RequestMethod.POST)
+    public BaseJsonResultVO updatePortrait(@RequestParam MultipartFile file, @RequestParam(value = "studentid") Integer studentId, Map<Object, Object> map) {
+        BaseJsonResultVO vo = new BaseJsonResultVO();
+        map.put("webServer", webServerUrl);
+        String fileName = file.getOriginalFilename();
+        String result = null;
+        try {
+            result = FileUtils.uploadFile(file.getBytes(), uploadPath, webServerUrl, fileName);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        KeUser keUser = userService.findUserById(studentId);
+        keUser.setPortrait(result);
+        userService.updateUser(keUser);
+        vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setMessage("ok");
+        return vo;
+    }
+
+
 
 
 

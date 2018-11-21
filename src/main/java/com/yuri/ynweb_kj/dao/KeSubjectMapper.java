@@ -17,7 +17,7 @@ public interface KeSubjectMapper {
 
     int updateByPrimaryKey(KeSubject record);
 
-    Integer getNextUnreadSubjectTeacherId();
+    Integer getNextUnreadSubjectTeacherId(Integer studentId);
 
     List<KeSubject> studentMessageList(Map map);
 

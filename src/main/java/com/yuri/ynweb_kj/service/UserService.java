@@ -158,8 +158,8 @@ public class UserService {
         keReplyMapper.insert(keReply);
     }
 
-    public Integer getNextUnreadSubjectTeacherId() {
-        return keSubjectMapper.getNextUnreadSubjectTeacherId();
+    public Integer getNextUnreadSubjectTeacherId(Integer studentId) {
+        return keSubjectMapper.getNextUnreadSubjectTeacherId(studentId);
     }
 
     public List<KeSubject> studentMessageList(Integer studentId, Integer teacherId, Integer isRead) {

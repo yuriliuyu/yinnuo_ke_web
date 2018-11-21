@@ -50,7 +50,7 @@
     from ke_subject
   </select>
   <select id="getNextUnreadSubjectTeacherId" resultType="java.lang.Integer">
-    select teacher_id from ke_subject where is_read = -1 order by create_time limit 1
+    select teacher_id from ke_subject where student_id=#{studentId} and is_read = -1 order by create_time limit 1
   </select>
   <select id="studentMessageList" resultMap="BaseResultMap">
     select id, content, teacher_name,teacher_id from ke_subject where teacher_id=#{teacherId} and student_id=#{studentId}

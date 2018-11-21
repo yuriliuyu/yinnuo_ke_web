@@ -117,6 +117,7 @@ public class ContentController {
                     l3dto.setTitle(l3contentList.get(k).getTitle());
                     l3dto.setType(l3contentList.get(k).getType());
                     l3dto.setUrl(l3contentList.get(k).getUrl());
+                    l3dto.setContent(l3contentList.get(k).getContent());
                     //增加可读标识
                     if (orderId == null) {
                         if (k == 0) {
@@ -416,6 +417,7 @@ public class ContentController {
         }
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
+        vo.setData(content.getContent());
         vo.setMessage("ok");
         return vo;
     }

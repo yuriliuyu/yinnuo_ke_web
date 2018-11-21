@@ -368,7 +368,8 @@ public class UserController {
      */
     @RequestMapping(value = "/front/student/message/list", method = RequestMethod.POST)
     public BaseJsonResultVO studentMessageList(@RequestParam(value = "studentid") Integer studentId) {
-        Integer nextTeacherId = userService.getNextUnreadSubjectTeacherId();
+        Integer nextTeacherId = userService.getNextUnreadSubjectTeacherId(studentId);
+        logger.info("nextTeacherId="+nextTeacherId);
         List<KeSubject> subjectList = userService.studentMessageList(studentId, nextTeacherId, EnumIsRead.UNREAD.value());
         List<SubjectDto> resultList = new LinkedList<>();
         for (KeSubject subject : subjectList) {
@@ -383,6 +384,7 @@ public class UserController {
             resultList.add(dto);
         }
         userService.updateSubjectReadable(studentId, nextTeacherId);
+        logger.info("更新未读消息, studentId={},nextTeacherId={}",new Object[]{studentId, nextTeacherId});
         BaseJsonResultVO vo = new BaseJsonResultVO();
         vo.setCode(EnumResCode.SUCCESSFUL.value());
         vo.setMessage("ok");
@@ -489,6 +491,4 @@ public class UserController {
         vo.setData(resultList);
         return vo;
     }
-
-
 }
