@@ -25,6 +25,9 @@ spring:
     expose-session-attributes: false
     expose-spring-macro-helpers: false
     suffix: .ftl
+  servlet:
+    multipart:
+      max-file-size: 500Mb
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
   type-aliases-package: com.yuri.ynweb_kj.pojo
