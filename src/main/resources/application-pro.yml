@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8087
 web:
   upload-path: /usr/local/nginx/html/upload/
   server-url: http://www.adl66.com/upload
@@ -10,7 +10,7 @@ spring:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
   datasource:
     name: ynweb
-    url: jdbc:mysql://127.0.0.1:3306/yinnuo_web?characterEncoding=UTF-8&useSSL=false&autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:3508/yinnuo_web?characterEncoding=UTF-8&useSSL=false&autoReconnect=true
     username: root
     password: geVpX9Ef
     driver-class-name: com.mysql.jdbc.Driver
