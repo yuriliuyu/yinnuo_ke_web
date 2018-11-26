@@ -252,25 +252,32 @@ public class ContentBackendController {
                                         @RequestParam(value = "content", required = false) String content) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeContent keContent = contentService.getContentById(id);
-        if (title != null) {
-            keContent.setTitle(title);
+        if(keContent != null){
+            if (title != null) {
+                keContent.setTitle(title);
+            }
+            if (orderId != null) {
+                keContent.setOrderId(orderId);
+            }
+            if (url != null) {
+                keContent.setUrl(url);
+            }
+            if (description != null) {
+                keContent.setDescription(description);
+            }
+            if (content != null) {
+                keContent.setContent(content);
+            }
+            contentService.updateContent(keContent);
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }else{
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("无此内容");
+            return vo;
         }
-        if (orderId != null) {
-            keContent.setOrderId(orderId);
-        }
-        if (url != null) {
-            keContent.setUrl(url);
-        }
-        if (description != null) {
-            keContent.setDescription(description);
-        }
-        if (content != null) {
-            keContent.setContent(content);
-        }
-        contentService.updateContent(keContent);
-        vo.setCode(EnumResCode.SUCCESSFUL.value());
-        vo.setMessage("ok");
-        return vo;
+
     }
 
     @RequestMapping(value = "/backend/character/edit", method = RequestMethod.POST)
@@ -283,47 +290,53 @@ public class ContentBackendController {
                                           @RequestParam(value = "summary", required = false) String summary) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeCharacter keCharacter = contentService.getCharacterById(id);
+        if(keCharacter != null){
+            if (backgroundPic1 != null) {
+                keCharacter.setBackgroundPic1(backgroundPic1);
+            }
+            if (protrait != null) {
+                keCharacter.setProtrait(protrait);
+            }
+            if (name != null) {
+                keCharacter.setName(name);
+            }
+            if (age != null) {
+                keCharacter.setAge(age);
+            }
+            if (gender != null) {
+                keCharacter.setGender(gender);
+            }
+            if (backgroundPic3 != null) {
+                keCharacter.setBackgroundPic3(backgroundPic3);
+            }
+            if (backgroundPic4 != null) {
+                keCharacter.setBackgroundPic4(backgroundPic4);
+            }
+            if (orderId != null) {
+                keCharacter.setOrderId(orderId);
+            }
+            if (backgroundText != null) {
+                keCharacter.setBackgroundText(backgroundText);
+            }
+            if (information != null) {
+                keCharacter.setInformation(information);
+            }
+            if (question != null) {
+                keCharacter.setQuestion(question);
+            }
+            if (summary != null) {
+                keCharacter.setSummary(summary);
+            }
+            contentService.updateCharacter(keCharacter);
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }else{
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("无此内容");
+            return vo;
+        }
 
-        if (backgroundPic1 != null) {
-            keCharacter.setBackgroundPic1(backgroundPic1);
-        }
-        if (protrait != null) {
-            keCharacter.setProtrait(protrait);
-        }
-        if (name != null) {
-            keCharacter.setName(name);
-        }
-        if (age != null) {
-            keCharacter.setAge(age);
-        }
-        if (gender != null) {
-            keCharacter.setGender(gender);
-        }
-        if (backgroundPic3 != null) {
-            keCharacter.setBackgroundPic3(backgroundPic3);
-        }
-        if (backgroundPic4 != null) {
-            keCharacter.setBackgroundPic4(backgroundPic4);
-        }
-        if (orderId != null) {
-            keCharacter.setOrderId(orderId);
-        }
-        if (backgroundText != null) {
-            keCharacter.setBackgroundText(backgroundText);
-        }
-        if (information != null) {
-            keCharacter.setInformation(information);
-        }
-        if (question != null) {
-            keCharacter.setQuestion(question);
-        }
-        if (summary != null) {
-            keCharacter.setSummary(summary);
-        }
-        contentService.updateCharacter(keCharacter);
-        vo.setCode(EnumResCode.SUCCESSFUL.value());
-        vo.setMessage("ok");
-        return vo;
     }
 
     @RequestMapping(value = "/backend/test/edit", method = RequestMethod.POST)
@@ -331,19 +344,27 @@ public class ContentBackendController {
                                     @RequestParam(value = "picurl", required = false) String picUrl, @RequestParam(value = "orderid", required = false) Integer orderId) {
         KeTest keTest = contentService.getTestById(id);
         BaseJsonResultVO vo = new BaseJsonResultVO();
-        if (picUrl != null) {
-            keTest.setPicUrl(picUrl);
+        if(keTest != null){
+            if (picUrl != null) {
+                keTest.setPicUrl(picUrl);
+            }
+            if (orderId != null) {
+                keTest.setOrderId(orderId);
+            }
+            if (question != null) {
+                keTest.setQuestion(question);
+            }
+            contentService.updateTest(keTest);
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }else{
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("无此内容");
+            return vo;
         }
-        if (orderId != null) {
-            keTest.setOrderId(orderId);
-        }
-        if (question != null) {
-            keTest.setQuestion(question);
-        }
-        contentService.updateTest(keTest);
-        vo.setCode(EnumResCode.SUCCESSFUL.value());
-        vo.setMessage("ok");
-        return vo;
+
+
     }
 
     @RequestMapping(value = "/backend/character/pic/edit", method = RequestMethod.POST)
@@ -352,22 +373,29 @@ public class ContentBackendController {
                                              @RequestParam(value = "description", required = false) String description) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeCharacterPic keCharacterPic = contentService.getCharacterPicById(id);
-        if (picture != null) {
-            keCharacterPic.setPicture(picture);
+        if(keCharacterPic != null){
+            if (picture != null) {
+                keCharacterPic.setPicture(picture);
+            }
+            if (orderId != null) {
+                keCharacterPic.setOrderId(orderId);
+            }
+            if (isRight != null) {
+                keCharacterPic.setIsRight(isRight);
+            }
+            if (description != null) {
+                keCharacterPic.setDescription(description);
+            }
+            contentService.updateCharacterPic(keCharacterPic);
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }else{
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("无此内容");
+            return vo;
         }
-        if (orderId != null) {
-            keCharacterPic.setOrderId(orderId);
-        }
-        if (isRight != null) {
-            keCharacterPic.setIsRight(isRight);
-        }
-        if (description != null) {
-            keCharacterPic.setDescription(description);
-        }
-        contentService.updateCharacterPic(keCharacterPic);
-        vo.setCode(EnumResCode.SUCCESSFUL.value());
-        vo.setMessage("ok");
-        return vo;
+
     }
 
     @RequestMapping(value = "/backend/test/option/edit", method = RequestMethod.POST)
@@ -375,19 +403,27 @@ public class ContentBackendController {
                                           @RequestParam(value = "isanswer", required = false) Integer isAnswer, @RequestParam(value = "orderid", required = false) Integer orderId) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeTestOption keTestOption = contentService.getTestOptionById(id);
-        if (option != null) {
-            keTestOption.setOption(option);
+        if(keTestOption != null){
+            if (option != null) {
+                keTestOption.setOption(option);
+            }
+            if (orderId != null) {
+                keTestOption.setOrderId(orderId);
+            }
+            if (isAnswer != null) {
+                keTestOption.setIsAnswer(isAnswer);
+            }
+            contentService.updateTestOption(keTestOption);
+            vo.setCode(EnumResCode.SUCCESSFUL.value());
+            vo.setMessage("ok");
+            return vo;
+        }else{
+            vo.setCode(EnumResCode.SERVER_ERROR.value());
+            vo.setMessage("无此内容");
+            return vo;
         }
-        if (orderId != null) {
-            keTestOption.setOrderId(orderId);
-        }
-        if (isAnswer != null) {
-            keTestOption.setIsAnswer(isAnswer);
-        }
-        contentService.updateTestOption(keTestOption);
-        vo.setCode(EnumResCode.SUCCESSFUL.value());
-        vo.setMessage("ok");
-        return vo;
+
+
     }
 
 }

@@ -1,9 +1,5 @@
 server:
   port: 8087
-  ssl:
-    key-store: classpath:adl66.com.pfx
-    key-store-password: rzzkUVc3
-    keyStoreType: PKCS12
 web:
   upload-path: /usr/local/var/www
   server-url: http://localhost
