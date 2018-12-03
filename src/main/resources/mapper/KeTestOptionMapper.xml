@@ -42,13 +42,13 @@
     from ke_test_option
   </select>
   <select id="getOptionListByTestId" resultMap="BaseResultMap" >
-    select id, `option`
+    select id, `option`,order_id
     from ke_test_option
     where test_id=#{testId}
     order by order_id
   </select>
   <select id="getTestoptionByTestId" resultMap="BaseResultMap" >
-    select id, `option`, test_id, is_answer
+    select id, `option`, test_id, is_answer,order_id
     from ke_test_option
     where test_id=#{testId} order by order_id
   </select>

@@ -42,7 +42,7 @@
     from ke_test
   </select>
   <select id="getTestListByContentId" resultMap="BaseResultMap" >
-    select id, question, pic_url
+    select id, question, pic_url,order_id
     from ke_test
     where content_id=#{contentId}
     order by order_id
