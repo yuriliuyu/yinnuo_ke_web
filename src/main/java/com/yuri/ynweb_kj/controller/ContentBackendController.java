@@ -249,7 +249,7 @@ public class ContentBackendController {
     public BaseJsonResultVO contentEdit(@RequestParam(value = "id") Integer id, @RequestParam(value = "title", required = false) String title,
                                         @RequestParam(value = "orderid", required = false) Integer orderId, @RequestParam(value = "url", required = false) String url,
                                         @RequestParam(value = "description", required = false) String description,
-                                        @RequestParam(value = "content", required = false) String content) {
+                                        @RequestParam(value = "content", required = false) String content, @RequestParam(value = "type", required = false) Integer type) {
         BaseJsonResultVO vo = new BaseJsonResultVO();
         KeContent keContent = contentService.getContentById(id);
         if(keContent != null){
@@ -267,6 +267,9 @@ public class ContentBackendController {
             }
             if (content != null) {
                 keContent.setContent(content);
+            }
+            if (type != null) {
+                keContent.setType(type);
             }
             contentService.updateContent(keContent);
             vo.setCode(EnumResCode.SUCCESSFUL.value());
